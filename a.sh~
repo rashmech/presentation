@@ -1,0 +1,8 @@
+#!/bin/bash
+latex actualpresent.tex
+dvips -o actualpresent_ras.ps actualpresent
+ps2pdf actualpresent_ras.ps
+#latex report1.tex 
+#dvips report1.ps
+#ps2pdf report1.ps
+evince actualpresent_ras.pdf &

@@ -1,0 +1,1355 @@
+\documentclass[xcolor=dvipsnames]{beamer} 
+\setbeamercolor{structure}{fg=OliveGreen!50!black} 
+\usetheme{Madrid}
+%\usetheme{CambridgeUS}
+%\useoutertheme{tree}
+
+\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps}
+\mode<handout>
+{
+	\usepackage{pgfpages}
+	\pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=5mm]
+	%\pgfpagesuselayout{2 on 1}[a4paper,portrait,border shrink=5mm]
+}
+\usepackage{fancyhdr}
+\usepackage{pstricks}
+%\usepackage{beamerthemeiitb}
+\usepackage{colortbl}
+\usepackage{pst-node}
+\usepackage{pst-grad}
+\usepackage{pst-text}
+\usepackage{pst-rel-points}
+\usepackage{pst-coil}
+\usepackage{amssymb}
+%\usepackage{times}
+\usepackage{calc}
+\usepackage{etex}
+\usepackage{ifthen}
+%\usepackage{mydefs}
+\usepackage{rotating}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{color}
+\usepackage[normalem]{ulem}
+\usepackage{hyperref}
+\usepackage{xspace}
+
+\newcommand{\mustl}{\mbox{\sf MustL}}
+\newcommand{\mustr}{\mbox{\sf MustR}}
+\newcommand{\mustgen}{\mbox{\sf MustGen}}
+\newcommand{\mustkill}{\mbox{\sf MustKill}}
+\newcommand{\mustin}{\mbox{\sf MustIn}}
+\newcommand{\mustout}{\mbox{\sf MustOut}}
+\newcommand{\mayl}{\mbox{\sf MayL}}
+\newcommand{\mayr}{\mbox{\sf MayR}}
+\newcommand{\maygen}{\mbox{\sf MayGen}}
+\newcommand{\maykill}{\mbox{\sf MayKill}}
+\newcommand{\mayin}{\mbox{\sf MayIn}}
+\newcommand{\mayout}{\mbox{\sf MayOut}}
+%\newcommand{\In}[1]{\mbox{IN$_{#1}$}}
+%\newcommand{\Out}[1]{\mbox{OUT$\!\!_{#1}$}}
+\newcommand{\Gen}[1]{\mbox{Gen$_{#1}$}}
+\newcommand{\Kill}[1]{\mbox{Kill$_{#1}$}}
+
+\newcommand{\CPGEN}{\mbox{\sf CPGEN}}
+\newcommand{\CPKILL}{\mbox{\sf CPKILL}}
+\newcommand{\CPIN}{\mbox{\sf CPIN}}
+\newcommand{\CPOUT}{\mbox{\sf CPOUT}}
+\newcommand{\LHS}{\mbox{\sf LHS}}
+\newcommand{\RHS}{\mbox{\sf\em RHS}}
+\newcommand{\OPERANDS}{\mbox{\sf OPERANDS}}
+\newcommand{\USE}{\mbox{\sf USE}}
+\newcommand{\VARS}{\mbox{\sf VARS}}
+\newcommand{\In}[1]{\mbox{\em In$_{#1}$}}
+\newcommand{\Out}[1]{\mbox{\em Out$_{#1}$}}
+\newcommand{\minus}{\ominus}
+\newcommand{\RootVar}{\mbox{\sf\em Root\/}}
+\newcommand{\clean}{\mbox{\sf\em CleanUp\/}}
+\newcommand{\AP}[1]{\mbox{\sf\em P$\;({#1})$}}
+\newcommand{\cupG}{{\;\uplus\;}}
+\newcommand{\EFG}{\mbox{$\scalebox{1.2}{$\epsilon$}_{RG}$}}
+\newcommand{\extend}[2]{\mbox{$#1\#\, #2$}}
+\newcommand{\Empty}{\mbox{$\mathcal{E}$}}
+\newcommand{\graphA}[1]{\text{{\sf\em makeGraph\/}$({#1})$}}
+\newcommand{\graphO}[1]{\mbox{{\sf\em\small GOnly\/}$({#1})$}}
+\newcommand{\Lin}[1]{\mbox{{\sf \em  ELIn}$_{#1}$}}
+\newcommand{\Lout}[1]{\mbox{{\sf \em ELOut}$_{#1}$}}
+\newcommand{\Lgen}[1]{\mbox{{\sf \em ELGen}$_{#1}$}}
+\newcommand{\LgenC}[1]{\mbox{{\sf \em ELConstGen}$_{#1}$}}
+\newcommand{\LgenT}[1]{\mbox{{\sf \em ELDepGen}$_{#1}$}}
+\newcommand{\Lkill}[1]{\mbox{{\sf \em ELKillPath}$_{#1}$}}
+\newcommand{\LLD}[1]{\mbox{\sf\em LDirect$_{#1}$}}
+\newcommand{\LT}[1]{\mbox{\sf\em LTransfer$_{#1}$}}
+\newcommand{\bigcupG}{{\biguplus}}
+
+
+				 
+\newcommand{\NULL}{\mbox{null\/}}
+\newcommand{\undef}{\mbox{\sf\em undef\/}}
+\newcommand{\nonconst}{\mbox{\sf\em nonconst\/}}
+\newcommand{\Lt}{\mbox{$\widehat{L}\,$}}
+\newcommand{\Ht}{\mbox{$\widehat{h}$}}
+\newcommand{\Gt}{\mbox{$\widehat{g}$}}
+\newcommand{\Xt}{\mbox{$\widehat{x}$}}
+\newcommand{\Yt}{\mbox{$\widehat{y}$}}
+\newcommand{\Bt}{\mbox{$\widehat{\bot}$}}
+\newcommand{\Tt}{\mbox{$\widehat{\top}$}}
+\newcommand{\HL}{\mbox{\bfseries\em H}}
+\newcommand{\HT}{\mbox{$H$}}
+\newcommand{\LD}{\mbox{$L$}}
+
+
+\definecolor{blue}{named}{blue}
+\definecolor{brown}{named}{brown}
+
+\title{Bidirectional Context Sensitive data flow analysis in PRISM}
+\author[June'14]{Vinit Deodhar \\
+(\emph{Poject Guide: Prof. Uday Khedker})}
+\institute[IIT Bombay]{\includegraphics{logo.eps}\\
+Department of Computer Science and Engineering, \\ 
+Indian Institute of Technology, Bombay}
+%\titlegraphic{\scalebox{.9}{\includegraphics{logo.eps}}}
+\date[]{June 2014}
+
+%%\hypersetup{
+%%colorlinks=true,
+%%linkcolor=brown
+%%}
+\definecolor{LightGreen}{rgb}{0.564706,0.933333,0.564706}
+%%%%%%%%%%%%% Yellow
+\newrgbcolor{yel}{0.95 1 .8}
+\newcmykcolor{lightyellow}{0 0 .3 0}
+\newcmykcolor{llyellow}{0 0 .2 .1}
+%%%%%%%%%%%%% Green
+\newrgbcolor{darkgreen}{0 .5 0}
+\newrgbcolor{dgreen}{0 0.4 0}
+%%%%%%%%%%%%% Gray
+\newgray{lightgray}{.85}
+\newgray{dgray}{.35}
+\newgray{ldgray}{.75}
+%%%%%%%%%%%%% Pink
+\newcmykcolor{lpink}{0 .2 0 0}
+\newrgbcolor{pink}{1 .5 .6}
+%%%%%%%%%%%%% Magenta
+\newcmykcolor{lmagenta}{0 .4 0 0}
+%%%%%%%%%%%%% Blue
+\newrgbcolor{oldlightblue}{.1 .85 1}
+\newrgbcolor{lightblue}{.75 0.85 1}
+\newrgbcolor{newlightblue}{.75 0.75 1}
+\newrgbcolor{myblueother}{.5 .5 1}
+\newrgbcolor{darkblue}{0 0 .5}
+\newcmykcolor{llblue}{.2 .15 0 .1}
+\newcmykcolor{lblue}{.3 .2 0 .1}
+%%%%%%%%%%%%% Brown
+\newrgbcolor{brown}{.65 0.15 .0}
+%%%%%%%%%%%%% Cream
+\newrgbcolor{cream}{.95 0.95 .65}
+%%%%%%%%%%%%% Violet
+\newrgbcolor{violet}{.84 0 .96}
+\newrgbcolor{mygreen}{.24 .84 .72}
+\newcommand{\irulethree}{\rule{0cm}{.3cm}}
+\newcommand{\irulefour}{\rule{0cm}{.4cm}}
+\newcommand{\irulefive}{\rule{0cm}{.5cm}}
+\newcommand{\irulesix}{\rule{0cm}{.6cm}}
+
+
+\newcommand{\lptr}{\mbox{\bfseries\footnotesize lptr}}
+\newcommand{\rptr}{\mbox{\bfseries\footnotesize rptr}}
+%\includeonlyframes{current}
+
+
+\newcommand{\GenC}[1]{\mbox{{\sf\em ConstGen\/}$_{#1}$}}
+\newcommand{\KillC}[1]{\mbox{{\sf\em ConstKill\/}$_{#1}$}}
+\newcommand{\GenT}[1]{\mbox{{\sf\em DepGen\/}$_{#1}$}}
+\newcommand{\KillT}[1]{\mbox{{\sf\em DepKill\/}$_{#1}$}}
+\newcommand{\Cell}[3]{%
+
+\psset{unit=5mm}
+
+\begin{pspicture}(0,0)(6,4)
+\psframe(0,0)(6.25,4)
+\rput(4,2){\rnode{#1}{}}
+\rput(2,2){#2}
+\end{pspicture}
+}
+\newcommand{\Input}{\text{\sf\em input\/}\xspace}
+\newcommand{\reachable}{\mbox{\sf\em reachable\/}}
+\newcommand{\notReachable}{\mbox{\sf\em notReachable\/}}
+\newcommand{\Start}[1]{\text{$\mbox{\sf\em Start}_{#1}$}}
+\newcommand{\End}[1]{\text{$\mbox{\sf\em End}_{#1}$}}
+\newcommand{\NEWMEETC}[2]{\text{\raisebox{-1.6ex}
+                                {$\stackrel{#2}
+                                {\stackrel{\bigersqcap_C}
+                                        {\scriptstyle #1}}$}}}
+\newcommand{\pred}{\text {\sf\em{pred}\/}}
+\newcommand{\Succ}{\text{\sf\em {succ}\/}}
+\newcommand{\bigersqcap}{{\psset{unit=1mm}%
+			\begin{pspicture}(0,0)(3.5,4)
+			\psline[linewidth=.3](0,0)(0,4)(3,4)(3,0)
+                        \end{pspicture}
+			}
+                      }
+\newcommand{\status}{\mbox{\sf\em status\/}}
+\newcommand{\econd}{\mbox{\sf\em evalCond\/}}
+\newcommand{\Undefined}{\mbox{\sf\em undefined\/}}
+\newcommand{\etype}{\mbox{\sf\em label\/}}
+\newcommand{\operands}{\ensuremath{\mbox{\sf\em Opd\/}}}
+\newcommand{\ConstL}[1]{\mbox{{\sf\em ConstLeftL\/}$_{#1}$}}
+\newcommand{\ConstR}[1]{\mbox{{\sf\em ConstRightL\/}$_{#1}$}}
+\newcommand{\Const}{\mbox{\sf$\Bbb{C}$onst}}
+\newcommand{\XD}{\text{$X$}}
+\newcommand{\val}{\ensuremath{\mbox{\sf\em val\/}}}
+\newcommand{\binop}{\ensuremath{\mbox{\sf\em bop\/}}}
+\newcommand{\unop}{\ensuremath{\mbox{\sf\em uop\/}}}
+\newcommand{\var}{\mbox{\sf$\Bbb{V}$ar}}
+\newcommand{\gvar}{\mbox{\sf$\Bbb{G}$var}}
+\newcommand{\lvar}{\mbox{\sf$\Bbb{L}$var}}
+\newcommand{\expr}{\mbox{\sf$\Bbb{E}$xpr}}
+\newcommand{\eval}{\ensuremath{\mbox{\sf\em eval\/}}}
+\newcommand{\true}{\mbox{\sf\em true\/}}
+\newcommand{\false}{\mbox{\sf\em false\/}}
+\newcommand{\boundary}{\mbox{\sf\em BI}}
+
+\newcommand{\NL}[1]{\hspace*{#1\TAL}}
+
+\newlength{\codeLineLength}
+\newcommand{\codeLine}[4]{#1 &
+\psframebox[framesep=0,fillstyle=solid,fillcolor=#4,
+	linestyle=none]{\makebox[\codeLineLength][l]{%
+	\rule[-.3em]{0em}{.9em}{%
+	 \NL{#2}{\mbox{#3}}}}}
+\\ }
+	
+
+
+\newcommand{\Gax} % required
+{\scalebox{.8}{
+\large
+{\psset{unit=.9mm}
+\psset{linewidth=.3mm}
+		\begin{pspicture}(-1,-3.5)(16,0)
+%\psframe(-1,-2)(32,6)
+		\psrelpoint{origin}{i}{8}{-2}
+		\rput(\x{i},\y{i}){\rnode{i}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=1.1]{$x$}}}
+		\psrelpoint{origin}{j}{-1}{-2}
+		\rput(\x{j},\y{j}){\rnode{j}{}}
+		\ncline[linewidth=.4,doubleline=true]{->}{j}{i}
+		\end{pspicture}
+		}
+}}
+
+\newcommand{\Gbx} %required
+{\scalebox{.8}{
+\large
+{\psset{unit=.9mm}
+\psset{linewidth=.3mm}
+		\begin{pspicture}(-1,-3.5)(35,0)
+%\psframe(-1,-2)(32,6)
+		\psrelpoint{origin}{i}{8}{-2}
+		\rput(\x{i},\y{i}){\rnode{i}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=1.1]{$x$}}}
+		\psrelpoint{origin}{j}{-1}{-2}
+		\rput(\x{j},\y{j}){\rnode{j}{}}
+		\ncline[linewidth=.4,doubleline=true]{->}{j}{i}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{i}{m}{12}{0}
+		\rput(\x{m},\y{m}){\rnode{m}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_4$}}}
+		\ncline{->}{i}{m}
+%		%\aput[0pt]{0}{$l$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{m}{n}{12}{0}
+		\rput(\x{n},\y{n}){\rnode{n}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_6$}}}
+		\ncline{->}{m}{n}
+		%\aput[0pt]{0}{$l$}
+		\end{pspicture}
+		}
+}}
+
+\newcommand{\Gcx}
+{\scalebox{.8}{
+\large
+{\psset{unit=.9mm}
+\psset{linewidth=.3mm}
+		\begin{pspicture}(1,-8)(45,-3)
+%\psframe(-1,-8)(42,1)
+		\psrelpoint{origin}{k}{8}{-6}
+		\rput(\x{k},\y{k}){\rnode{k}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=1.1]{$x$}}}
+		\psrelpoint{origin}{j}{-1}{-6}
+		\rput(\x{j},\y{j}){\rnode{j}{}}
+		\ncline[linewidth=.4,doubleline=true]{->}{j}{k}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{k}{l}{12}{0}
+		\rput(\x{l},\y{l}){\rnode{l}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.6]{$r_3$}}}
+		\ncline[nodesep=-.3]{->}{k}{l}
+		%\aput[0pt]{0}{$r$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{l}{m}{12}{0}
+		\rput(\x{m},\y{m}){\rnode{m}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_4$}}}
+		\ncline[nodesep=-.5]{->}{l}{m}
+		%\aput[0pt]{0}{$l$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%\nccurve[angleA=-40,angleB=220,nodesep=-1]{->}{k}{m}
+		%\ncline[nodesep=-.5]{->}{k}{m}
+		%\bput[.5mm]{0}{$l$}
+		%\nccurve[angleA=45,angleB=135,nodesep=-1,ncurv=1.8]{->}{l}{l}
+		%\nccurve[angleA=-45,angleB=-135,nodesep=-1,ncurv=.5]{->}{k}{m}
+		\psrelpoint{m}{n}{12}{0}
+		\rput(\x{n},\y{n}){\rnode{n}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_6$}}}
+		\ncline[nodesep=-.5]{->}{m}{n}
+		%\aput[0pt]{0}{$l$}
+		\end{pspicture}
+		}
+}
+}
+\newcommand{\Gdx}
+{\scalebox{.75}{
+\large
+{\psset{unit=.9mm}
+\psset{linewidth=.3mm}
+		\begin{pspicture}(-1,-9)(45,-3)
+%\psframe(-1,-8)(42,1)
+		\psrelpoint{origin}{k}{8}{-6}
+		\rput(\x{k},\y{k}){\rnode{k}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=1.1]{$x$}}}
+		\psrelpoint{origin}{j}{-1}{-6}
+		\rput(\x{j},\y{j}){\rnode{j}{}}
+		\ncline[linewidth=.4,doubleline=true]{->}{j}{k}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{k}{l}{12}{0}
+		\rput(\x{l},\y{l}){\rnode{l}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.6]{$r_3$}}}
+		\ncline[nodesep=-.3]{->}{k}{l}
+		%\aput[0pt]{0}{$r$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{l}{m}{12}{0}
+		\rput(\x{m},\y{m}){\rnode{m}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_4$}}}
+		\ncline[nodesep=-.5]{->}{l}{m}
+		%\aput[0pt]{0}{$l$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%\nccurve[angleA=-40,angleB=220,nodesep=-1]{->}{k}{m}
+		%\ncline[nodesep=-.5]{->}{k}{m}
+		%\bput[.5mm]{0}{$l$}
+		%\nccurve[angleA=45,angleB=135,nodesep=-1,ncurv=1.8]{->}{l}{l}
+		\nccurve[angleA=-45,angleB=-135,nodesep=-1,ncurv=.5]{->}{k}{m}
+		\psrelpoint{m}{n}{12}{0}
+		\rput(\x{n},\y{n}){\rnode{n}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_6$}}}
+		\ncline[nodesep=-.5]{->}{m}{n}
+		%\aput[0pt]{0}{$l$}
+		\end{pspicture}
+		}
+}
+}
+\newcommand{\Gex} % required
+{\scalebox{.75}{
+\large
+{\psset{unit=.9mm}
+\psset{linewidth=.3mm}
+		\begin{pspicture}(1,-9)(45,-2)
+%\psframe(-1,-8)(42,1)
+		\psrelpoint{origin}{k}{8}{-6}
+		\rput(\x{k},\y{k}){\rnode{k}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=1.1]{$x$}}}
+		\psrelpoint{origin}{j}{-1}{-6}
+		\rput(\x{j},\y{j}){\rnode{j}{}}
+		\ncline[linewidth=.4,doubleline=true]{->}{j}{k}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{k}{l}{12}{0}
+		\rput(\x{l},\y{l}){\rnode{l}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.6]{$r_3$}}}
+		\ncline[nodesep=-.3]{->}{k}{l}
+		%\aput[0pt]{0}{$r$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{l}{m}{12}{0}
+		\rput(\x{m},\y{m}){\rnode{m}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_4$}}}
+		\ncline[nodesep=-.5]{->}{l}{m}
+		%\aput[0pt]{0}{$l$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%\nccurve[angleA=-40,angleB=220,nodesep=-1]{->}{k}{m}
+		%\ncline[nodesep=-.5]{->}{k}{m}
+		%\bput[.5mm]{0}{$l$}
+		\nccurve[angleA=45,angleB=135,nodesep=-1,ncurv=1.8]{->}{l}{l}
+		\nccurve[angleA=-45,angleB=-135,nodesep=-1,ncurv=.5]{->}{k}{m}
+		\psrelpoint{m}{n}{12}{0}
+		\rput(\x{n},\y{n}){\rnode{n}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_6$}}}
+		\ncline[nodesep=-.5]{->}{m}{n}
+		%\aput[0pt]{0}{$l$}
+		\end{pspicture}
+		}
+}
+}
+\newcommand{\Ggx} % required
+{\scalebox{.75}{
+\large
+{\psset{unit=.9mm}
+\psset{linewidth=.3mm}
+		\begin{pspicture}(1,-9)(45,-2)
+%\psframe(-1,-8)(42,1)
+		\psrelpoint{origin}{k}{8}{-6}
+		\rput(\x{k},\y{k}){\rnode{k}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=1.1]{$x$}}}
+		\psrelpoint{origin}{j}{-1}{-6}
+		\rput(\x{j},\y{j}){\rnode{j}{}}
+		\ncline[linewidth=.4,doubleline=true]{->}{j}{k}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{k}{l}{12}{0}
+		\rput(\x{l},\y{l}){\rnode{l}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.6]{$r_3$}}}
+		\ncline[nodesep=-.3]{->}{k}{l}
+		%\aput[0pt]{0}{$r$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{l}{m}{12}{0}
+		\rput(\x{m},\y{m}){\rnode{m}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_4$}}}
+		\ncline[nodesep=-.5]{->}{l}{m}
+		%\aput[0pt]{0}{$l$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%\nccurve[angleA=-40,angleB=220,nodesep=-1]{->}{k}{m}
+		%\ncline[nodesep=-.5]{->}{k}{m}
+		%\bput[.5mm]{0}{$l$}
+		\nccurve[angleA=45,angleB=135,nodesep=-1,ncurv=1.8]{->}{l}{l}
+		%\nccurve[angleA=-45,angleB=-135,nodesep=-1,ncurv=.5]{->}{k}{m}
+		\psrelpoint{m}{n}{12}{0}
+		\rput(\x{n},\y{n}){\rnode{n}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_6$}}}
+		\ncline[nodesep=-.5]{->}{m}{n}
+		%\aput[0pt]{0}{$l$}
+		\end{pspicture}
+		}
+}
+}
+\newcommand{\Gay} % required
+{\scalebox{.8}{
+\large
+{\psset{unit=.9mm}
+\psset{linewidth=.3mm}
+		\begin{pspicture}(5,-3.5)(12,0)
+%\psframe(-1,-2)(32,6)
+		\psrelpoint{origin}{i}{8}{-2}
+		\rput(\x{i},\y{i}){\rnode{i}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=1.1]{$y$}}}
+		\psrelpoint{origin}{j}{-1}{-2}
+		\rput(\x{j},\y{j}){\rnode{j}{}}
+		\ncline[linewidth=.4,doubleline=true]{->}{j}{i}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%\psrelpoint{i}{m}{10}{0}
+		%\rput(\x{m},\y{m}){\rnode{m}{\pscirclebox[framesep=.5]{$l_5$}}}
+		%\ncline{->}{i}{m}
+		%%\aput[0pt]{0}{$l$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%\psrelpoint{i}{n}{10}{0}
+		%\rput(\x{n},\y{n}){\rnode{n}{\pscirclebox[framesep=.5]{$l_7$}}}
+		%\ncline{->}{i}{n}
+		%%\aput[0pt]{0}{$l$}
+		\end{pspicture}
+		}
+}}
+
+\newcommand{\Gby} %required
+{\scalebox{.8}{
+\large
+{\psset{unit=.9mm}
+\psset{linewidth=.3mm}
+		\begin{pspicture}(5,-3.5)(23,0)
+%\psframe(-1,-2)(32,6)
+		\psrelpoint{origin}{i}{8}{-2}
+		\rput(\x{i},\y{i}){\rnode{i}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=1.1]{$y$}}}
+		\psrelpoint{origin}{j}{-1}{-2}
+		\rput(\x{j},\y{j}){\rnode{j}{}}
+		\ncline[linewidth=.4,doubleline=true]{->}{j}{i}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%\psrelpoint{i}{m}{12}{0}
+		%\rput(\x{m},\y{m}){\rnode{m}{\pscirclebox[framesep=.5]{$l_5$}}}
+		%\ncline{->}{i}{m}
+		%\aput[0pt]{0}{$l$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{i}{n}{12}{0}
+		\rput(\x{n},\y{n}){\rnode{n}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_6$}}}
+		\ncline{->}{i}{n}
+		%\aput[0pt]{0}{$l$}
+		\end{pspicture}
+		}
+}}
+\newcommand{\Gaz} % required
+{\scalebox{.85}{
+\large
+{\psset{unit=.9mm}
+\psset{linewidth=.3mm}
+		\begin{pspicture}(0,-3.5)(10,0)
+%\psframe(-1,-2)(32,6)
+		\psrelpoint{origin}{i}{8}{-2}
+		\rput(\x{i},\y{i}){\rnode{i}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=1.1]{$z$}}}
+		\psrelpoint{origin}{j}{-1}{-2}
+		\rput(\x{j},\y{j}){\rnode{j}{}}
+		\ncline[linewidth=.4,doubleline=true]{->}{j}{i}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%\psrelpoint{i}{m}{12}{0}
+		%\rput(\x{m},\y{m}){\rnode{m}{\pscirclebox[framesep=.5]{$l_5$}}}
+		%\ncline{->}{i}{m}
+		%%\aput[0pt]{0}{$l$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%\psrelpoint{i}{n}{12}{0}
+		%\rput(\x{n},\y{n}){\rnode{n}{\pscirclebox[framesep=.5]{$l_7$}}}
+		%\ncline{->}{i}{n}
+		%\aput[0pt]{0}{$l$}
+		\end{pspicture}
+		}
+}}
+
+\psset{unit=1mm}
+\newcommand{\memGraph}{%
+\begin{pspicture}(0,0)(38,20)
+\psframe(0,0)(38,20)
+%\psframe[linestyle=none,fillstyle=solid,fillcolor=lightyellow](12,0)(40,50)
+%\psframe[linestyle=none,fillstyle=solid,fillcolor=lightyellow](0,0)(10,50)
+\putnode{n0}{origin}{2}{16}{\pscirclebox[linestyle=none]{$x$}}
+\putnode{n1}{n0}{0}{-12}{\pscirclebox[linestyle=none]{$y$}}
+\putnode{n01}{n0}{10}{0}{\pscirclebox[framesep=2.8]{}}
+\putnode{n11}{n1}{10}{0}{\pscirclebox[framesep=2.8]{}}
+\putnode{n3}{n01}{10}{-6}{\pscirclebox[framesep=2.8]{}}
+\putnode{n4}{n3}{12}{0}{\pscirclebox[framesep=2.8]{}}
+%
+\ncline[nodesepA=-.5]{->}{n0}{n01}
+\ncline[nodesepA=-.6]{->}{n1}{n11}
+\ncline[nodesep=-.5]{->}{n01}{n3}
+\aput[2pt](.5){$l$}
+\ncline[nodesep=-.5]{->}{n11}{n3}
+\bput[2pt](.5){$r$}
+\ncline{->}{n3}{n4}
+\aput[2pt](.5){$n$}
+\end{pspicture}
+}
+%\setbeamertemplate{frametitle}[default][center]
+%\setbeamerfont{page number in head/foot}{size=\tiny}
+%\setbeamertemplate{headline}[frame number]
+%\usetheme{CambridgeUS}    
+%\usecolortheme[named=Green]{structure} 
+%\usetheme{Boadilla}
+
+
+\begin{document}
+
+\frame[plain]{\titlepage}
+
+\frame{
+\frametitle{Outline of the talk}
+\begin{itemize}
+  \item Overview of PRISM data flow analyzer generator
+  \item Background on Value context method.
+  \item Our extensions to PRISM
+  \item Building a scalable data flow solver
+  \item Performance measurements
+  \item Conclusion and future work
+\end{itemize}
+}
+
+\part{Overview of PRISM data flow analyzer generator}
+\frame{\partpage}
+
+\frame{
+\frametitle{PRISM}
+\begin{itemize}
+\item<1-> \alt<1> { PRISM is an program analyzer generator developed by TATA Research Development and Design Center (TRDDC)}
+
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{Architecture of PRISM}
+\onslide<1->
+\psset{unit=1mm}
+\psset{linewidth=.3mm}
+\psset{framearc=.1}
+\begin{pspicture}(25,-25)(38,64)
+%\psframe(0,0)(38,64)
+\putnode{n0}{origin}{50}{60}{\psframebox{Program} }
+\putnode{n1}{n0}{50}{0}{\psframebox{IR generator} }
+\putnode{n2}{n0}{80}{0}{\psframebox{IR} }
+\putnode{n3}{n0}{80}{-25}{\psframebox{Generated analyzer} }
+\putnode{n4}{n0}{80}{-50}{\psframebox{Output reports} }
+\ncline{->}{n0}{n1}
+\ncline{->}{n1}{n2}
+\ncline{->}{n2}{n3}
+\ncline{->}{n3}{n4}
+
+\onslide<2->
+\putnode{n7}{n3}{-95}{-10}{\psframebox{.java files} }
+\putnode{n6}{n3}{-95}{10}{\psframebox{.klg files} }
+
+\onslide<3->
+\putnode{n5}{n3}{-60}{0}{\psframebox{Kulang Compiler} }
+\ncline{->}{n5}{n3}\aput(0.4){Generated}
+\nccurve[ncurv=0.5,angleA=0,angleB=225]{->}{n7}{n3}\aput(0.5){Copied}
+\nccurve[ncurv=0.5,angleA=0,angleB=135]{->}{n6}{n5}
+
+
+\end{pspicture}
+}
+
+
+\frame{
+\frametitle{Structure of generated analyser}
+\onslide<1->
+\psset{unit=1mm}
+\psset{linewidth=.3mm}
+\psset{framearc=.1}
+\begin{pspicture}(25,-25)(38,64)
+%\psframe(0,0)(38,64)
+\putnode{n0}{origin}{52}{50}{\psframebox{Input program} }
+\putnode{n1}{n0}{0}{-35}{\psframebox{Generated component} }
+\putnode{n2}{n0}{55}{0}{\psframebox{Solver} }
+\putnode{n3}{n0}{40}{-35}{\psframebox{DFResults} }
+\putnode{n4}{n0}{85}{0}{\psframebox{Output reports} }
+\ncline{->}{n0}{n2}
+\ncline{->}{n2}{n4}
+\ncline{-}{n2}{n1}
+\ncline{-}{n2}{n3}
+
+\end{pspicture}
+}
+
+\begin{frame}[fragile]
+  \frametitle{Kulang specifications}
+  \begin{verbatim}
+
+lattice L ::  set NamedEntity; 
+
+top : (set NamedEntity){};
+
+A meet B : A+B;
+
+BoundaryValue : (set NamedEntity){};
+
+BackwardNodeflow( n: Call, S: L ) 
+let
+   useincall = getNEsFromCall( n )		
+in
+   S + useincall;
+  \end{verbatim}
+\end{frame}
+
+
+\frame{
+\frametitle{Limitations of current version of PRISM}
+\begin{itemize}
+\item<1-> PRISM solver is not context sensitive
+\item<2-> The current framework does not support context sensitive analysis. Summary based approach is used in the current solver.
+
+\item<3-> The current framework does not support bidirectional analysis. Analysis can be either forward of backward. Hence there is no implementation of context sensitive bidirectional analysis.
+\item<4-> The current kulang specifications does not have support for specifying lattices of data flow problems.
+\item<5-> Meet function needs to be explicitly defined in kulang specifications. The meet function can be inferred from the lattice of the data flow problem.
+\item<6-> There is no proper way to debug the kulang specifications. 
+\end{itemize}
+}
+
+
+\begin{frame}[fragile]
+  \frametitle{Precise and useful information}
+\fontsize{9pt}{7.5}\selectfont
+\begin{verbatim}
+
+void f(int m,int n,int o)
+{
+int a;
+if(a)
+g(m,n,o);
+print n;
+a=m
+}
+
+void g(int x,int y,int z)
+{
+int b;
+if(b)
+f(x,y,z);
+print y;
+b=x;
+}
+
+int main()
+{
+int p,q,r;
+f(p,q,r); // {p,q,r}
+return 0;
+} 
+\end{verbatim}
+\end{frame}
+
+
+\part{Value context method}
+\frame{\partpage}
+
+
+
+\frame{
+\frametitle{Context Sensitive analysis using value contexts}
+\begin{itemize}
+  \item Based on paper Interprocedural data flow analysis in Soot using value contexts by Padhye, Rohan and Khedker, Uday P presented in SOAP 13
+  \item New context created for a unique  (function, entry value) combination
+  \item Uses a context transition graph for expressing relation between contexts 
+\end{itemize}
+}
+
+\frame{
+\frametitle{Motivating example of value contexts method}
+\onslide<1->
+\psset{unit=1mm}
+\psset{linewidth=.3mm}
+\psset{framearc=.1}
+\begin{pspicture}(0,0)(150,150)
+
+\onslide<1->
+\putnode{n0}{origin}{15}{145}{\psframebox{$Start~main$} }
+\putnode{n1}{n0}{0}{-10}{\psframebox{$C1~:~Call~f$}}
+\putnode{n2}{n0}{0}{-25}{\psframebox{$R1~:~Ret~f~$}}
+\putnode{n3}{n0}{0}{-33}{\psframebox{$use~z$}}
+\putnode{n4}{n0}{0}{-41}{\psframebox{$C2~:~Call~g$}}
+\putnode{n5}{n0}{0}{-56}{\psframebox{$R2~:~Ret~g~$}}
+\putnode{n6}{n0}{0}{-64}{\psframebox{$End~main$}}
+%\putnode{n9}{n0}{0}{15}{\psframebox[linestyle=none]{main()}}
+
+
+\ncline{-}{n0}{n1}
+\ncline{-}{n2}{n3}
+\ncline{-}{n3}{n4}
+
+\ncline{-}{n5}{n6}
+
+\putnode{n10}{n0}{45}{-10}{\psframebox{$Start~f$}}
+\putnode{n13}{n10}{0}{-10}{\psframebox{$End~f$}}
+%\putnode{n19}{n10}{0}{15}{\psframebox[linestyle=none]{Function f}}
+
+%\putnode{n31}{n10}{0}{-25}{\psframebox[linestyle=none]{$(\rho_1,\{z\}),(\rho_2,\{y\})$}}
+\ncline{-}{n10}{n13}
+
+%\nccurve[ncurv=1.5,angleA=315,angleB=135]{-}{n1}{n10}
+%\nccurve[ncurv=1.5,angleA=230,angleB=45]{-}{n13}{n2}
+
+\putnode{n20}{n0}{90}{-15}{\psframebox{$Start~g$}}
+\putnode{n21}{n20}{0}{-20}{\psframebox{$C3~:~Call~f$}}
+\putnode{n22}{n20}{0}{-35}{\psframebox{$R3~:~Ret~f~$}}
+\putnode{n23}{n20}{0}{-45}{\psframebox{$use~y$}}
+\putnode{n24}{n20}{0}{-55}{\psframebox{$End~g$}}
+\putnode{n32}{n20}{0}{-95}{\psframebox[linestyle=none]{$(\rho_0,\{\})$}}
+%\putnode{n100}{n20}{0}{15}{\psframebox[linestyle=none]{Function g}}
+
+\ncline{-}{n20}{n21}
+\ncline{-}{n22}{n23}
+\ncline{-}{n23}{n24}
+%\nccurve[ncurv=0.5,angleA=315,angleB=135]{-}{n4}{n20}
+%\nccurve[ncurv=0.5,angleA=230,angleB=45]{-}{n24}{n5}
+%\nccurve[ncurv=0.5,angleA=220,angleB=45]{-}{n21}{n10}
+%\nccurve[ncurv=0.5,angleA=315,angleB=120]{-}{n13}{n22}
+
+
+\onslide<2-2>
+%\fontsize{8pt}{7.2}\selectfont
+\putnode{p}{n0}{40}{-30}{\begin{minipage}{40mm}
+		\begin{block}{Context table}
+		\begin{center}
+		\resizebox{4cm}{!}{%
+		\begin{tabular}{|c|c|c|c|}
+		\hline
+		Context & Function & Entry & Exit\\
+		\hline
+		$X_{0}$& main & \{\} & \{\} \\
+		\hline
+		\end{tabular}%
+		}
+		\end{center}
+	\end{block}
+	 \colorbox[HTML]{ECF6CE}{
+		     \begin{minipage}[h][2cm][t]{\textwidth}
+	\putnode{n115}{origin}{14}{-14}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{0}$}}
+		\end{minipage} }	
+		\end{minipage}
+		}
+
+\onslide<3->
+\putnode{n106}{n6}{17}{0}{\psframebox[linestyle=none]{$(X_0,\{\})$}}
+
+\onslide<4->
+\putnode{n105}{n5}{19}{0}{\psframebox[linestyle=none]{$(X_0,\{\})$}}
+
+\onslide<5-5>
+%\fontsize{8pt}{7.2}\selectfont
+\putnode{p}{n0}{40}{-30}{\begin{minipage}{40mm}
+		\begin{block}{Context table}
+		\begin{center}
+		\resizebox{4cm}{!}{%
+		\begin{tabular}{|c|c|c|c|}
+		\hline
+		Context & Function & Entry & Exit\\
+		\hline
+		$X_{0}$& main & \{\} & \{\} \\
+		$X_{1}$& g    & \{\} & \{\} \\
+		\hline
+		\end{tabular}%
+		}
+		\end{center}
+	\end{block}
+	 \colorbox[HTML]{ECF6CE}{
+		     \begin{minipage}[h][2cm][t]{\textwidth}
+	\putnode{n215}{origin}{14}{-14}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{0}$}}
+	\putnode{n216}{n215}{15}{0}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{1}$}}
+	\nccurve[angleA=50,angleB=130,nodesepA=-1,nodesepB=-1.2]{->}{n215}{n216}\aput[2pt](.5){$c_{2}$}
+		\end{minipage} }	
+		\end{minipage}
+              }
+
+\onslide<6->
+\putnode{n1124}{n24}{-15}{0}{\psframebox[linestyle=none]{$(X_1,\{\})$}}
+
+\onslide<7->
+\putnode{n1123}{n23}{-15}{0}{\psframebox[linestyle=none]{$(X_1,\{y\})$}}
+
+\onslide<8->
+\putnode{n1122}{n22}{-19}{0}{\psframebox[linestyle=none]{$(X_1,\{y\})$}}
+
+
+\onslide<9-9>
+%\fontsize{8pt}{7.2}\selectfont
+\putnode{p}{n0}{40}{-30}{\begin{minipage}{50mm}
+		\begin{block}{Context table}
+		\begin{center}
+		\resizebox{4cm}{!}{%
+		\begin{tabular}{|c|c|c|c|}
+		\hline
+		Context & Function & Entry & Exit\\
+		\hline
+		$X_{0}$& main & \{\} & \{\}  \\
+		$X_{1}$& g    & \{\} & \{\}  \\
+		$X_{2}$& f    & \{y\} & \{\}  \\
+		\hline
+		\end{tabular}%
+		}
+		\end{center}
+	\end{block}
+	 \colorbox[HTML]{ECF6CE}{
+		     \begin{minipage}[h][3cm][t]{\textwidth}
+	\putnode{n215}{origin}{4}{-14}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{0}$}}
+	\putnode{n216}{n215}{20}{10}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{1}$}}
+	\putnode{n217}{n215}{40}{0}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{2}$}}
+	\nccurve[angleA=50,angleB=180,nodesepA=-1,nodesepB=-1.2]{->}{n215}{n216}\aput[2pt](.2){$c_{2}$}
+	\nccurve[angleA=0,angleB=130,nodesepA=-1,nodesepB=-1.2]{->}{n216}{n217}\aput[2pt](.5){$c_{3}$}
+		\end{minipage} }	
+		\end{minipage}
+              }
+
+\onslide<10->
+\putnode{n105}{n13}{14}{0}{\psframebox[linestyle=none]{$(X_2,\{y\})$}}
+
+\onslide<11->
+\putnode{n105}{n10}{14}{0}{\psframebox[linestyle=none]{$(X_2,\{y\})$}}
+
+\onslide<12-12>
+\putnode{p}{n0}{40}{-30}{\begin{minipage}{50mm}
+		\begin{block}{Context table}
+		\begin{center}
+		\resizebox{4cm}{!}{%
+		\begin{tabular}{|c|c|c|c|}
+		\hline
+		Context & Function & Entry & Exit\\
+		\hline
+		$X_{0}$& main & \{\} & \{\}  \\
+		$X_{1}$& g    & \{\} & \{\}  \\
+		$X_{2}$& f    & \{y\} & \{y\}  \\
+		\hline
+		\end{tabular}%
+		}
+		\end{center}
+	\end{block}
+	 \colorbox[HTML]{ECF6CE}{
+		     \begin{minipage}[h][3cm][t]{\textwidth}
+	\putnode{n215}{origin}{4}{-14}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{0}$}}
+	\putnode{n216}{n215}{20}{10}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{1}$}}
+	\putnode{n217}{n215}{40}{0}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{2}$}}
+	\nccurve[angleA=50,angleB=180,nodesepA=-1,nodesepB=-1.2]{->}{n215}{n216}\aput[2pt](.2){$c_{2}$}
+	\nccurve[angleA=0,angleB=130,nodesepA=-1,nodesepB=-1.2]{->}{n216}{n217}\aput[2pt](.5){$c_{3}$}
+		\end{minipage} }	
+		\end{minipage}
+              }
+
+\onslide<13->
+\putnode{n1121}{n21}{-17}{0}{\psframebox[linestyle=none]{$(X_1,\{y\})$}}
+
+\onslide<14->
+\putnode{n1120}{n20}{-15}{0}{\psframebox[linestyle=none]{$(X_1,\{y\})$}}
+
+\onslide<15-15>
+\putnode{p}{n0}{40}{-30}{\begin{minipage}{50mm}
+		\begin{block}{Context table}
+		\begin{center}
+		\resizebox{4cm}{!}{%
+		\begin{tabular}{|c|c|c|c|}
+		\hline
+		Context & Function & Entry & Exit\\
+		\hline
+		$X_{0}$& main & \{\} & \{\}  \\
+		$X_{1}$& g    & \{\} & \{y\}  \\
+		$X_{2}$& f    & \{y\} & \{y\}  \\
+		\hline
+		\end{tabular}%
+		}
+		\end{center}
+	\end{block}
+	 \colorbox[HTML]{ECF6CE}{
+		     \begin{minipage}[h][3cm][t]{\textwidth}
+	\putnode{n215}{origin}{4}{-14}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{0}$}}
+	\putnode{n216}{n215}{20}{10}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{1}$}}
+	\putnode{n217}{n215}{40}{0}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{2}$}}
+	\nccurve[angleA=50,angleB=180,nodesepA=-1,nodesepB=-1.2]{->}{n215}{n216}\aput[2pt](.2){$c_{2}$}
+	\nccurve[angleA=0,angleB=130,nodesepA=-1,nodesepB=-1.2]{->}{n216}{n217}\aput[2pt](.5){$c_{3}$}
+		\end{minipage} }	
+		\end{minipage}
+              }
+
+\onslide<16->
+\putnode{n104}{n4}{19}{0}{\psframebox[linestyle=none]{$(X_0,\{y\})$}}
+
+\onslide<17->
+\putnode{n103}{n3}{17}{0}{\psframebox[linestyle=none]{$(X_0,\{y,z\})$}}
+
+\onslide<18->
+\putnode{n102}{n2}{21}{0}{\psframebox[linestyle=none]{$(X_0,\{y,z\})$}}
+
+\onslide<19-19>
+\putnode{p}{n0}{40}{-30}{\begin{minipage}{50mm}
+		\begin{block}{Context table}
+		\begin{center}
+		\resizebox{4cm}{!}{%
+		\begin{tabular}{|c|c|c|c|}
+		\hline
+		Context & Function & Entry & Exit\\
+		\hline
+		$X_{0}$& main & \{\} & \{\}  \\
+		$X_{1}$& g    & \{\} & \{y\}  \\
+		$X_{2}$& f    & \{y\} & \{y\}  \\
+		$X_{3}$& f    & \{y,z\} & \{\}  \\
+		\hline
+		\end{tabular}%
+		}
+		\end{center}
+	\end{block}
+	 \colorbox[HTML]{ECF6CE}{
+		     \begin{minipage}[h][3cm][t]{\textwidth}
+	\putnode{n215}{origin}{4}{-14}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{0}$}}
+	\putnode{n216}{n215}{20}{10}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{1}$}}
+	\putnode{n217}{n215}{40}{0}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{2}$}}
+	\putnode{n218}{n215}{20}{-10}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{3}$}}
+        \nccurve[angleA=50,angleB=180,nodesepA=-1,nodesepB=-1.2]{->}{n215}{n216}\aput[2pt](.2){$c_{2}$}
+	\nccurve[angleA=0,angleB=130,nodesepA=-1,nodesepB=-1.2]{->}{n216}{n217}\aput[2pt](.5){$c_{3}$}
+	\nccurve[angleA=315,angleB=180,nodesepA=-1,nodesepB=-1.2]{->}{n215}{n218}\aput[2pt](.5){$c_{1}$}
+		\end{minipage} }	
+		\end{minipage}
+              }
+
+\onslide<20->
+\putnode{n1224}{n13}{30}{0}{\psframebox[linestyle=none]{$(X_3,\{y,z\})$}}
+
+\onslide<21->
+\putnode{n1210}{n10}{30}{0}{\psframebox[linestyle=none]{$(X_3,\{y,z\})$}}
+
+\onslide<22-22>
+\putnode{p}{n0}{40}{-30}{\begin{minipage}{50mm}
+		\begin{block}{Context table}
+		\begin{center}
+		\resizebox{4cm}{!}{%
+		\begin{tabular}{|c|c|c|c|}
+		\hline
+		Context & Function & Entry & Exit\\
+		\hline
+		$X_{0}$& main & \{\} & \{\}  \\
+		$X_{1}$& g    & \{\} & \{y\}  \\
+		$X_{2}$& f    & \{y\} & \{y\}  \\
+		$X_{3}$& f    & \{y,z\} & \{y,z\}  \\
+		\hline
+		\end{tabular}%
+		}
+		\end{center}
+	\end{block}
+	 \colorbox[HTML]{ECF6CE}{
+		     \begin{minipage}[h][3cm][t]{\textwidth}
+	\putnode{n215}{origin}{4}{-14}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{0}$}}
+	\putnode{n216}{n215}{20}{10}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{1}$}}
+	\putnode{n217}{n215}{40}{0}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{2}$}}
+	\putnode{n218}{n215}{20}{-10}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{3}$}}
+        \nccurve[angleA=50,angleB=180,nodesepA=-1,nodesepB=-1.2]{->}{n215}{n216}\aput[2pt](.2){$c_{2}$}
+	\nccurve[angleA=0,angleB=130,nodesepA=-1,nodesepB=-1.2]{->}{n216}{n217}\aput[2pt](.5){$c_{3}$}
+	\nccurve[angleA=315,angleB=180,nodesepA=-1,nodesepB=-1.2]{->}{n215}{n218}\aput[2pt](.5){$c_{1}$}
+		\end{minipage} }	
+		\end{minipage}
+              }
+
+\onslide<23->
+\putnode{n1001}{n1}{20}{0}{\psframebox[linestyle=none]{$(X_0,\{y,z\})$}}
+
+\onslide<24->
+\putnode{n1000}{n0}{20}{0}{\psframebox[linestyle=none]{$(X_0,\{y,z\})$}}
+
+\onslide<25-25>
+\putnode{p}{n0}{40}{-30}{\begin{minipage}{50mm}
+		\begin{block}{Context table}
+		\begin{center}
+		\resizebox{4cm}{!}{%
+		\begin{tabular}{|c|c|c|c|}
+		\hline
+		Context & Function & Entry & Exit\\
+		\hline
+		$X_{0}$& main & \{\} & \{y,z\}  \\
+		$X_{1}$& g    & \{\} & \{y\}  \\
+		$X_{2}$& f    & \{y\} & \{y\}  \\
+		$X_{3}$& f    & \{y,z\} & \{y,z\}  \\
+		\hline
+		\end{tabular}%
+		}
+		\end{center}
+	\end{block}
+	 \colorbox[HTML]{ECF6CE}{
+		     \begin{minipage}[h][3cm][t]{\textwidth}
+	\putnode{n215}{origin}{4}{-14}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{0}$}}
+	\putnode{n216}{n215}{20}{10}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{1}$}}
+	\putnode{n217}{n215}{40}{0}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{2}$}}
+	\putnode{n218}{n215}{20}{-10}{\pscirclebox[fillstyle=solid,fillcolor=OliveGreen,framesep=1.8]{$X_{3}$}}
+        \nccurve[angleA=50,angleB=180,nodesepA=-1,nodesepB=-1.2]{->}{n215}{n216}\aput[2pt](.2){$c_{2}$}
+	\nccurve[angleA=0,angleB=130,nodesepA=-1,nodesepB=-1.2]{->}{n216}{n217}\aput[2pt](.5){$c_{3}$}
+	\nccurve[angleA=315,angleB=180,nodesepA=-1,nodesepB=-1.2]{->}{n215}{n218}\aput[2pt](.5){$c_{1}$}
+		\end{minipage} }	
+		\end{minipage}
+              }
+
+
+\end{pspicture}
+}
+
+
+
+
+\part{Our extensions to PRISM}
+\frame{\partpage}
+
+\frame{
+\frametitle{Our extensions to PRISM}
+\begin{itemize}
+\item<1-> Extended the kulang specification language to accept bidirectional data flow problems 
+\item<2-> Extended the core solver to efficiently solve a bidirectional data flow problem.
+\end{itemize}
+}
+
+\frame{
+\frametitle{Extensions to kulang}
+We extended the specifications so that they can accept
+\begin{itemize}
+\item<1-> Forward and backward flow functions and meet functions
+\item<2-> Forward and backward lattice types
+\item<3-> Forward and backward boundry values and top values
+\end{itemize}
+}
+
+\frame{
+\frametitle{Extensions to core solver}
+\onslide<1->
+\psset{unit=1mm}
+\psset{linewidth=.3mm}
+\psset{framearc=.1}
+\begin{pspicture}(25,-25)(38,64)
+%\psframe(0,0)(38,64)
+\putnode{n0}{origin}{52}{50}{\psframebox{Input program} }
+\putnode{n1}{n0}{0}{-35}{\psframebox{Generated component} }
+\putnode{n2}{n0}{55}{0}{\psframebox{Solver} }
+\putnode{n3}{n0}{40}{-35}{\psframebox{DFResults} }
+\putnode{n4}{n0}{85}{0}{\psframebox{Output reports} }
+\ncline{->}{n0}{n2}
+\ncline{->}{n2}{n4}
+\ncline{-}{n2}{n1}
+\ncline{-}{n2}{n3}
+\ncline{-}{n2}{n14}
+
+\onslide<2->
+\putnode{n11}{n0}{-4}{-42}{\psframebox{Bidir Generated component}}
+
+\onslide<3->
+\putnode{n13}{n0}{44}{-42}{\psframebox{Context sensitive DFResults}}
+
+\onslide<4->
+\putnode{n14}{n0}{85}{-42}{\psframebox{Context graph}}
+
+
+\end{pspicture}
+}
+
+
+
+\part{Building a scalable solver}
+\frame{
+\frametitle{Major factors affecting the running time of a solver}
+\begin{itemize}
+  \item Complexity of input program
+  \item Complexity of flow functions
+  \item Amount of data flow information maintained
+  \item Path followed to achieve the fixedpoint
+\end{itemize}
+}
+
+\frame{
+\frametitle{Complexity of input program}
+\begin{itemize}
+  \item Identify statements where gen will be constant
+  \item Example where gen will not be constant \newline \newline
+	p = **q \newline
+  \item Example where gen will be constant \newline \newline
+	p = q \newline
+\end{itemize}
+}
+
+
+
+\frame{
+\frametitle{Complexity of flow functions}
+\begin{itemize}
+  \item Optimizations that can be handled by java compiler 
+	\newline \newline
+  int a = c + b; // This assignment is dead if a is not used further
+ 	  \newline 	
+  \item  Optimizations that cannot be handled by java compiler 
+\newline \newline
+   (a - a$\cap$b ) $\cup$ (b - a$\cap$b ) \newline \newline 
+   code produced by kulang translator : \newline
+   t1 = a.intersection(b)  \newline
+   t2 = a.diff(t1) \newline
+   t3 = a.intersection(b) \newline
+   t4 = b.diff(t3) \newline
+   t5 = t2.union(t4) \newline \newline 
+   a $\cup$ b - a$\cap$b (Simplified expression for the above expression)
+\end{itemize}
+}
+
+\frame{
+\frametitle{Amount of data flow information maintained}
+\begin{itemize}
+  \item Separating accessible and non accessible information
+  \item Bypassing global variables
+  \item Techniques specific to data flow analysis
+
+\end{itemize}
+}
+
+\frame{
+\frametitle{Amount of data flow information maintained}
+\begin{itemize}
+  \item Separating accessible and non accessible information \newline \newline
+        A variable is accessible inside a function if :
+        \begin{itemize}
+	\item It is local to the function
+	\item It is global
+	\item It is accessible through a pointer which is accessible inside the function
+        \end{itemize}
+    \{p$->$a\} \newline 	
+  f() //No information will be passed to f  \newline 
+  \{p,a,b\} \newline  \newline 
+  
+  \{p$->$a\} \newline 	
+  f() /{p,a} will be passed to f  \newline 
+  \{p,a,b\} 
+
+\end{itemize}
+}
+
+\frame{
+\frametitle{Amount of data flow information maintained}
+\begin{itemize}
+  \item Bypassing global variables \newline  \newline 
+      \begin{itemize}
+	\item Let G be set of globals in the program
+	\item For every function, compute G1 which is set of globals accessed from that function
+	\item At the function call, transfer G1 in the function and copy G-G1 dirirectly across the function call
+        \end{itemize}       
+  \{G1 $\cup$ (G - G1)\} \newline 
+  f() // transfer G1 in the called function \newline 	  
+  \{G2 $\cup$ (G - G1)\} // G2 is at exit of the called function
+
+\end{itemize}
+}
+
+\frame{
+\frametitle{Amount of data flow information maintained}
+\begin{itemize}
+  \item Techniques specific to data flow analysis
+        \begin{itemize}
+	\item Do not explicitly maintain information of undef pointers
+	 \end{itemize} 
+    
+\end{itemize}
+}
+
+\frame{
+\frametitle{Path followed to achieve the fixedpoint}
+\begin{itemize}
+  \item Solve the cfg in postorder in a backward analysis and preorder in a forward analysis
+  \item Solve inner function calls first. 	
+\end{itemize}
+}
+
+\frame{
+\frametitle{Path followed to achieve the fixedpoint}
+\begin{pspicture}(0,0)(150,75)
+
+\begin{psframe}(0,0)(29,75)
+\putnode{n0}{origin}{12}{66}{n1 \psframebox{$....$} }
+\putnode{n1}{n0}{0}{-10}{n2 \psframebox{$....$} }
+\putnode{n2}{n1}{0}{-10}{n3 \psframebox{$....$} }
+\putnode{n3}{n2}{0}{-10}{n4 \psframebox{$....$} }
+\putnode{n4}{n3}{0}{-10}{n5 \psframebox{$....$} }
+\putnode{n5}{n4}{0}{-10}{n6 \psframebox{$....$} }
+\putnode{n6}{n5}{0}{-10}{n7 \psframebox{$....$} }
+
+\ncline{->}{n0}{n1}
+\ncline{->}{n1}{n2}
+\ncline{->}{n2}{n3}
+\ncline{->}{n3}{n4}
+\ncline{->}{n4}{n5}
+\ncline{->}{n5}{n6}
+\nccurve[ncurv=1.5,angleA=325,angleB=45]{->}{n5}{n4}
+\end{psframe}
+
+\begin{psframe}(30,0)(149,75)
+\putnode{n7}{origin}{80}{63}{\psframebox{\begin{tabular}{@{}c@{}}
+$A~possible~processing~order~for~a~FIFO~worklist:$\\
+$$\\
+$n7,n6,n5,n4,n6,n3,n5,n2,n4,n1,n3,n2,n1$\\
+\end{tabular}} }
+
+\putnode{n8}{n7}{0}{-40}{\psframebox{\begin{tabular}{@{}c@{}}
+$Optimal~processing~order:$\\
+$$\\
+$n7,n6,n5,n6,n5,n4,n3,n2,n1$\\
+\end{tabular}}  }
+\end{psframe}
+
+\end{pspicture}
+}
+
+
+\part{Performance measurements}
+\frame{\partpage}
+
+\frame{
+\frametitle{Percentage of basic blocks having 0 pointsto pairs}
+  \begin{figure}
+    \centering
+    \includegraphics[width = 0.9\textwidth]{./freq.eps}
+    \caption{Percentage of basic blocks having 0 pointsto pairs}
+  \end{figure}
+}
+
+\frame{
+\frametitle{Average pointsto pairs per basic blocks}
+  \begin{figure}
+    \centering
+    \includegraphics[width = 0.9\textwidth]{./avg.eps}
+    \caption{Average pointsto pairs per basic blocks}
+  \end{figure}
+}
+
+
+\frame{
+\frametitle{Separating accessible and non accessible information vs non separation }
+\begin{table}
+\begin{tabular}{|p{1.5cm}|p{1.5cm} |p{1.5cm} |p{1.5cm}|p{1.5cm}|}
+\hline
+ Program & \multicolumn{2}{p{3cm}|}{Without separating accessible and non accessible variables} & \multicolumn{2}{p{3cm}|}{Separating accessible and non accessible variables} \\ \cline{2-5} 
+                         & Avg DF values                          & Execution time (ms)                        & Avg DF values                      & Execution time (ms)                 \\ \hline
+mcf                      &              7.46                          &                      488                &        2.51                      &         312                         \\ \hline
+lbm                      &             10.01                          &                         434             &           0.58                        &          258                          \\ \hline
+bzip2                    &            14.56                           &       6815                             &                   1.2                 &                        1699            \\ \hline
+sjeng                    &                         -               &                          -              &                      0.62              &                   6050                 \\ \hline
+hmmer                    &                    -                    &                       -                 &                   0.4                 &                   3358                \\ \hline
+h264ref                  &                    -                    &                        -                &                    1.01                &                     33046               \\ \hline
+\end{tabular}
+\caption{Separating accessible and non accessible information vs non separation }
+\label{tab:cmp1}
+\end{table}
+}
+
+
+\frame{
+\frametitle{Bypassing global variables }
+\begin{table}
+\begin{tabular}{|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|p{1.5cm}|}
+\hline
+Program & \multicolumn{3}{p{4.5cm}|}{Bypassing global variables}                                 & Not bypassing global variables\\ \cline{2-5} 
+                         & Execution time & Total global variables & Avg number of global variables accessed per context          & Execution time           \\ \hline
+mcf                  &     4280                &    26                                   &       5.86                                                                                    &      4703                             \\ \hline
+lbm                  &      1639               &   4                                      &       0.7                                                                                       &       1788                         \\ \hline
+bzip2                &   21784           &  38                                    &      3.6                             		                    	                  &          51445                       \\ \hline
+sjeng                &   27116           &  25                                    &      1.85                                                                                         &           92415                                   \\ \hline
+hmmer             &  27900            &   232             			&       6.05           							          &         31268                          \\ \hline
+h264ref           &   311021         &   464     			        &     43.95     					                                      &           1023911                          \\ \hline
+cfe           &   4038702         &   1449     			        &     62.20     					                                      &                -                                  \\ \hline
+\end{tabular}
+\caption{Bypassing global variables vs non bypassing }
+\label{tab:cmp2}
+
+\end{table}
+}
+
+\frame{
+\frametitle{Measuring Scalability : Major operations}
+\begin{enumerate}
+\item Storing and retrieving data flow information
+\item Maintaining Context transition diagram
+\item Maintaining context table
+\item Maintaining worklist
+\item Flow functions
+\end{enumerate}
+}
+
+
+\frame{
+\frametitle{Measuring Scalability}
+\begin{enumerate}
+\item The performance bottleneck observed was operations of Context transition diagram (CTD)
+\item For \emph{bzip2}, it takes 5\% of total solver time. For \emph{PRJ1}, it took 10 \% of total solver time whereas for \emph{PRJ2}, it took 50\% of the total solver time
+\item The current implementation is done by representing CTD using hashmap.
+\end{enumerate}
+}
+
+\frame{
+\frametitle{Proposed method to remove the bottleneck}
+\begin{enumerate}
+\item Represent Context transition diagram (CTD) using a bitmaps.
+\item A bitmap can be allocated memory in advance by estimating the size of CTD reduce allocation time.
+\end{enumerate}
+}
+
+\part{Future work}
+\frame{\partpage}
+
+\frame{
+\frametitle{Future work}
+\begin{enumerate}
+\item Analyze code developed in industry using the solver.
+\item Investigate the reasons behind results of PRJ1.
+\item Analyze code on languages using pass by reference semantics
+\item Integrate the solver in PRISM.
+\end{enumerate}
+}
+
+\part{Thank You !}
+\frame{\partpage}
+
+\end{document}

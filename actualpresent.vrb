@@ -1,0 +1,19 @@
+\frametitle{Kulang specifications}
+  \begin{verbatim}
+Forwardlattice Rec ::  res; // lattice types
+Backwardlattice Liv :: livenesslattice;
+
+//types of forward and backward lattices
+ForwardTop : (res){};
+BackwardTop : (livenesslattice){};
+
+A ForwardMeet B : Meet(A,B); //meet functions
+A BackwardMeet B : A+B;
+
+ForwardBoundaryValue : (res){}; // boundary values
+BackwardBoundaryValue :(livenesslattice){} ;
+
+// Specification of backward flow functions
+BackwardNodeflow( n: Binary, R: Rec, L:Liv )
+
+  \end{verbatim}

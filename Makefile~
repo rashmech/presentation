@@ -1,0 +1,16 @@
+# Harshada Patil
+# Roll no. 123050090
+all:extension.pdf
+
+extension.pdf:extension.ps
+	ps2pdf extension.ps
+
+extension.ps:extension.dvi
+	dvips extension.dvi
+
+extension.dvi:extension.tex  
+	latex extension
+	latex extension
+	
+clean:
+	rm -rf extension.lof extension.ps extension.aux extension.log extension.dvi extension.pdf extension.toc extension.bbl extension.blg

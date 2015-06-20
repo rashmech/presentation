@@ -1,0 +1,1775 @@
+\documentclass[xcolor=dvipsnames]{beamer} 
+\setbeamercolor{structure}{fg=OliveGreen!50!black} 
+\usetheme{Madrid}
+%\usetheme{CambridgeUS}
+%\useoutertheme{tree}
+
+\usepackage{pgf,pgfarrows,pgfnodes,pgfautomata,pgfheaps}
+\mode<handout>
+{
+	\usepackage{pgfpages}
+	\pgfpagesuselayout{4 on 1}[a4paper,landscape,border shrink=5mm]
+	%\pgfpagesuselayout{2 on 1}[a4paper,portrait,border shrink=5mm]
+}
+\usepackage{verbatim}
+\usepackage{fancyhdr}
+\usepackage{pstricks}
+%\usepackage{beamerthemeiitb}
+\usepackage{colortbl}
+\usepackage{pst-node}
+\usepackage{pst-grad}
+\usepackage{pst-text}
+\usepackage{pst-rel-points}
+\usepackage{pst-coil}
+\usepackage{amssymb}
+%\usepackage{times}
+\usepackage{calc}
+\usepackage{etex}
+\usepackage{ifthen}
+%\usepackage{mydefs}
+\usepackage{rotating}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{color}
+\usepackage[normalem]{ulem}
+\usepackage{hyperref}
+\usepackage{xspace}
+
+\newcommand{\mustl}{\mbox{\sf MustL}}
+\newcommand{\mustr}{\mbox{\sf MustR}}
+\newcommand{\mustgen}{\mbox{\sf MustGen}}
+\newcommand{\mustkill}{\mbox{\sf MustKill}}
+\newcommand{\mustin}{\mbox{\sf MustIn}}
+\newcommand{\mustout}{\mbox{\sf MustOut}}
+\newcommand{\mayl}{\mbox{\sf MayL}}
+\newcommand{\mayr}{\mbox{\sf MayR}}
+\newcommand{\maygen}{\mbox{\sf MayGen}}
+\newcommand{\maykill}{\mbox{\sf MayKill}}
+\newcommand{\mayin}{\mbox{\sf MayIn}}
+\newcommand{\mayout}{\mbox{\sf MayOut}}
+%\newcommand{\In}[1]{\mbox{IN$_{#1}$}}
+%\newcommand{\Out}[1]{\mbox{OUT$\!\!_{#1}$}}
+\newcommand{\Gen}[1]{\mbox{Gen$_{#1}$}}
+\newcommand{\Kill}[1]{\mbox{Kill$_{#1}$}}
+
+\newcommand{\CPGEN}{\mbox{\sf CPGEN}}
+\newcommand{\CPKILL}{\mbox{\sf CPKILL}}
+\newcommand{\CPIN}{\mbox{\sf CPIN}}
+\newcommand{\CPOUT}{\mbox{\sf CPOUT}}
+\newcommand{\LHS}{\mbox{\sf LHS}}
+\newcommand{\RHS}{\mbox{\sf\em RHS}}
+\newcommand{\OPERANDS}{\mbox{\sf OPERANDS}}
+\newcommand{\USE}{\mbox{\sf USE}}
+\newcommand{\VARS}{\mbox{\sf VARS}}
+\newcommand{\In}[1]{\mbox{\em In$_{#1}$}}
+\newcommand{\Out}[1]{\mbox{\em Out$_{#1}$}}
+\newcommand{\minus}{\ominus}
+\newcommand{\RootVar}{\mbox{\sf\em Root\/}}
+\newcommand{\clean}{\mbox{\sf\em CleanUp\/}}
+\newcommand{\AP}[1]{\mbox{\sf\em P$\;({#1})$}}
+\newcommand{\cupG}{{\;\uplus\;}}
+\newcommand{\EFG}{\mbox{$\scalebox{1.2}{$\epsilon$}_{RG}$}}
+\newcommand{\extend}[2]{\mbox{$#1\#\, #2$}}
+\newcommand{\Empty}{\mbox{$\mathcal{E}$}}
+\newcommand{\graphA}[1]{\text{{\sf\em makeGraph\/}$({#1})$}}
+\newcommand{\graphO}[1]{\mbox{{\sf\em\small GOnly\/}$({#1})$}}
+\newcommand{\Lin}[1]{\mbox{{\sf \em  ELIn}$_{#1}$}}
+\newcommand{\Lout}[1]{\mbox{{\sf \em ELOut}$_{#1}$}}
+\newcommand{\Lgen}[1]{\mbox{{\sf \em ELGen}$_{#1}$}}
+\newcommand{\LgenC}[1]{\mbox{{\sf \em ELConstGen}$_{#1}$}}
+\newcommand{\LgenT}[1]{\mbox{{\sf \em ELDepGen}$_{#1}$}}
+\newcommand{\Lkill}[1]{\mbox{{\sf \em ELKillPath}$_{#1}$}}
+\newcommand{\LLD}[1]{\mbox{\sf\em LDirect$_{#1}$}}
+\newcommand{\LT}[1]{\mbox{\sf\em LTransfer$_{#1}$}}
+\newcommand{\bigcupG}{{\biguplus}}
+
+
+				 
+\newcommand{\NULL}{\mbox{null\/}}
+\newcommand{\undef}{\mbox{\sf\em undef\/}}
+\newcommand{\nonconst}{\mbox{\sf\em nonconst\/}}
+\newcommand{\Lt}{\mbox{$\widehat{L}\,$}}
+\newcommand{\Ht}{\mbox{$\widehat{h}$}}
+\newcommand{\Gt}{\mbox{$\widehat{g}$}}
+\newcommand{\Xt}{\mbox{$\widehat{x}$}}
+\newcommand{\Yt}{\mbox{$\widehat{y}$}}
+\newcommand{\Bt}{\mbox{$\widehat{\bot}$}}
+\newcommand{\Tt}{\mbox{$\widehat{\top}$}}
+\newcommand{\HL}{\mbox{\bfseries\em H}}
+\newcommand{\HT}{\mbox{$H$}}
+\newcommand{\LD}{\mbox{$L$}}
+
+
+\definecolor{blue}{named}{blue}
+\definecolor{brown}{named}{brown}
+
+\title{Incremental Data Flow analysis using PRISM}
+\author[March'15]{Rashmi Rekha Mech \\
+(\emph{Project Guide: Prof. Uday Khedker})}
+\institute[IIT Bombay]{\includegraphics{logo.eps}\\
+Department of Computer Science and Engineering, \\ 
+Indian Institute of Technology, Bombay}
+%\titlegraphic{\scalebox{.9}{\includegraphics{logo.eps}}}
+\date[]{March 2015}
+
+%%\hypersetup{
+%%colorlinks=true,
+%%linkcolor=brown
+%%}
+\definecolor{LightGreen}{rgb}{0.564706,0.933333,0.564706}
+%%%%%%%%%%%%% Yellow
+\newrgbcolor{yel}{0.95 1 .8}
+\newcmykcolor{lightyellow}{0 0 .3 0}
+\newcmykcolor{llyellow}{0 0 .2 .1}
+%%%%%%%%%%%%% Green
+\newrgbcolor{darkgreen}{0 .5 0}
+\newrgbcolor{dgreen}{0 0.4 0}
+%%%%%%%%%%%%% Gray
+\newgray{lightgray}{.85}
+\newgray{dgray}{.35}
+\newgray{ldgray}{.75}
+%%%%%%%%%%%%% Pink
+\newcmykcolor{lpink}{0 .2 0 0}
+\newrgbcolor{pink}{1 .5 .6}
+%%%%%%%%%%%%% Magenta
+\newcmykcolor{lmagenta}{0 .4 0 0}
+%%%%%%%%%%%%% Blue
+\newrgbcolor{oldlightblue}{.1 .85 1}
+\newrgbcolor{lightblue}{.75 0.85 1}
+\newrgbcolor{newlightblue}{.75 0.75 1}
+\newrgbcolor{myblueother}{.5 .5 1}
+\newrgbcolor{darkblue}{0 0 .5}
+\newcmykcolor{llblue}{.2 .15 0 .1}
+\newcmykcolor{lblue}{.3 .2 0 .1}
+%%%%%%%%%%%%% Brown
+\newrgbcolor{brown}{.65 0.15 .0}
+%%%%%%%%%%%%% Cream
+\newrgbcolor{cream}{.95 0.95 .65}
+%%%%%%%%%%%%% Violet
+\newrgbcolor{violet}{.84 0 .96}
+\newrgbcolor{mygreen}{.24 .84 .72}
+\newcommand{\irulethree}{\rule{0cm}{.3cm}}
+\newcommand{\irulefour}{\rule{0cm}{.4cm}}
+\newcommand{\irulefive}{\rule{0cm}{.5cm}}
+\newcommand{\irulesix}{\rule{0cm}{.6cm}}
+
+
+\newcommand{\lptr}{\mbox{\bfseries\footnotesize lptr}}
+\newcommand{\rptr}{\mbox{\bfseries\footnotesize rptr}}
+%\includeonlyframes{current}
+
+
+\newcommand{\GenC}[1]{\mbox{{\sf\em ConstGen\/}$_{#1}$}}
+\newcommand{\KillC}[1]{\mbox{{\sf\em ConstKill\/}$_{#1}$}}
+\newcommand{\GenT}[1]{\mbox{{\sf\em DepGen\/}$_{#1}$}}
+\newcommand{\KillT}[1]{\mbox{{\sf\em DepKill\/}$_{#1}$}}
+\newcommand{\Cell}[3]{%
+
+\psset{unit=5mm}
+
+\begin{pspicture}(0,0)(6,4)
+\psframe(0,0)(6.25,4)
+\rput(4,2){\rnode{#1}{}}
+\rput(2,2){#2}
+\end{pspicture}
+}
+\newcommand{\Input}{\text{\sf\em input\/}\xspace}
+\newcommand{\reachable}{\mbox{\sf\em reachable\/}}
+\newcommand{\notReachable}{\mbox{\sf\em notReachable\/}}
+\newcommand{\Start}[1]{\text{$\mbox{\sf\em Start}_{#1}$}}
+\newcommand{\End}[1]{\text{$\mbox{\sf\em End}_{#1}$}}
+\newcommand{\NEWMEETC}[2]{\text{\raisebox{-1.6ex}
+                                {$\stackrel{#2}
+                                {\stackrel{\bigersqcap_C}
+                                        {\scriptstyle #1}}$}}}
+\newcommand{\pred}{\text {\sf\em{pred}\/}}
+\newcommand{\Succ}{\text{\sf\em {succ}\/}}
+\newcommand{\bigersqcap}{{\psset{unit=1mm}%
+			\begin{pspicture}(0,0)(3.5,4)
+			\psline[linewidth=.3](0,0)(0,4)(3,4)(3,0)
+                        \end{pspicture}
+			}
+                      }
+\newcommand{\status}{\mbox{\sf\em status\/}}
+\newcommand{\econd}{\mbox{\sf\em evalCond\/}}
+\newcommand{\Undefined}{\mbox{\sf\em undefined\/}}
+\newcommand{\etype}{\mbox{\sf\em label\/}}
+\newcommand{\operands}{\ensuremath{\mbox{\sf\em Opd\/}}}
+\newcommand{\ConstL}[1]{\mbox{{\sf\em ConstLeftL\/}$_{#1}$}}
+\newcommand{\ConstR}[1]{\mbox{{\sf\em ConstRightL\/}$_{#1}$}}
+\newcommand{\Const}{\mbox{\sf$\Bbb{C}$onst}}
+\newcommand{\XD}{\text{$X$}}
+\newcommand{\val}{\ensuremath{\mbox{\sf\em val\/}}}
+\newcommand{\binop}{\ensuremath{\mbox{\sf\em bop\/}}}
+\newcommand{\unop}{\ensuremath{\mbox{\sf\em uop\/}}}
+\newcommand{\var}{\mbox{\sf$\Bbb{V}$ar}}
+\newcommand{\gvar}{\mbox{\sf$\Bbb{G}$var}}
+\newcommand{\lvar}{\mbox{\sf$\Bbb{L}$var}}
+\newcommand{\expr}{\mbox{\sf$\Bbb{E}$xpr}}
+\newcommand{\eval}{\ensuremath{\mbox{\sf\em eval\/}}}
+\newcommand{\true}{\mbox{\sf\em true\/}}
+\newcommand{\false}{\mbox{\sf\em false\/}}
+\newcommand{\boundary}{\mbox{\sf\em BI}}
+
+\newcommand{\NL}[1]{\hspace*{#1\TAL}}
+
+\newlength{\codeLineLength}
+\newcommand{\codeLine}[4]{#1 &
+\psframebox[framesep=0,fillstyle=solid,fillcolor=#4,
+	linestyle=none]{\makebox[\codeLineLength][l]{%
+	\rule[-.3em]{0em}{.9em}{%
+	 \NL{#2}{\mbox{#3}}}}}
+\\ }
+	
+
+
+\newcommand{\Gax} % required
+{\scalebox{.8}{
+\large
+{\psset{unit=.9mm}
+\psset{linewidth=.3mm}
+		\begin{pspicture}(-1,-3.5)(16,0)
+%\psframe(-1,-2)(32,6)
+		\psrelpoint{origin}{i}{8}{-2}
+		\rput(\x{i},\y{i}){\rnode{i}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=1.1]{$x$}}}
+		\psrelpoint{origin}{j}{-1}{-2}
+		\rput(\x{j},\y{j}){\rnode{j}{}}
+		\ncline[linewidth=.4,doubleline=true]{->}{j}{i}
+		\end{pspicture}
+		}
+}}
+
+\newcommand{\Gbx} %required
+{\scalebox{.8}{
+\large
+{\psset{unit=.9mm}
+\psset{linewidth=.3mm}
+		\begin{pspicture}(-1,-3.5)(35,0)
+%\psframe(-1,-2)(32,6)
+		\psrelpoint{origin}{i}{8}{-2}
+		\rput(\x{i},\y{i}){\rnode{i}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=1.1]{$x$}}}
+		\psrelpoint{origin}{j}{-1}{-2}
+		\rput(\x{j},\y{j}){\rnode{j}{}}
+		\ncline[linewidth=.4,doubleline=true]{->}{j}{i}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{i}{m}{12}{0}
+		\rput(\x{m},\y{m}){\rnode{m}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_4$}}}
+		\ncline{->}{i}{m}
+%		%\aput[0pt]{0}{$l$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{m}{n}{12}{0}
+		\rput(\x{n},\y{n}){\rnode{n}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_6$}}}
+		\ncline{->}{m}{n}
+		%\aput[0pt]{0}{$l$}
+		\end{pspicture}
+		}
+}}
+
+\newcommand{\Gcx}
+{\scalebox{.8}{
+\large
+{\psset{unit=.9mm}
+\psset{linewidth=.3mm}
+		\begin{pspicture}(1,-8)(45,-3)
+%\psframe(-1,-8)(42,1)
+		\psrelpoint{origin}{k}{8}{-6}
+		\rput(\x{k},\y{k}){\rnode{k}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=1.1]{$x$}}}
+		\psrelpoint{origin}{j}{-1}{-6}
+		\rput(\x{j},\y{j}){\rnode{j}{}}
+		\ncline[linewidth=.4,doubleline=true]{->}{j}{k}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{k}{l}{12}{0}
+		\rput(\x{l},\y{l}){\rnode{l}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.6]{$r_3$}}}
+		\ncline[nodesep=-.3]{->}{k}{l}
+		%\aput[0pt]{0}{$r$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{l}{m}{12}{0}
+		\rput(\x{m},\y{m}){\rnode{m}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_4$}}}
+		\ncline[nodesep=-.5]{->}{l}{m}
+		%\aput[0pt]{0}{$l$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%\nccurve[angleA=-40,angleB=220,nodesep=-1]{->}{k}{m}
+		%\ncline[nodesep=-.5]{->}{k}{m}
+		%\bput[.5mm]{0}{$l$}
+		%\nccurve[angleA=45,angleB=135,nodesep=-1,ncurv=1.8]{->}{l}{l}
+		%\nccurve[angleA=-45,angleB=-135,nodesep=-1,ncurv=.5]{->}{k}{m}
+		\psrelpoint{m}{n}{12}{0}
+		\rput(\x{n},\y{n}){\rnode{n}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_6$}}}
+		\ncline[nodesep=-.5]{->}{m}{n}
+		%\aput[0pt]{0}{$l$}
+		\end{pspicture}
+		}
+}
+}
+\newcommand{\Gdx}
+{\scalebox{.75}{
+\large
+{\psset{unit=.9mm}
+\psset{linewidth=.3mm}
+		\begin{pspicture}(-1,-9)(45,-3)
+%\psframe(-1,-8)(42,1)
+		\psrelpoint{origin}{k}{8}{-6}
+		\rput(\x{k},\y{k}){\rnode{k}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=1.1]{$x$}}}
+		\psrelpoint{origin}{j}{-1}{-6}
+		\rput(\x{j},\y{j}){\rnode{j}{}}
+		\ncline[linewidth=.4,doubleline=true]{->}{j}{k}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{k}{l}{12}{0}
+		\rput(\x{l},\y{l}){\rnode{l}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.6]{$r_3$}}}
+		\ncline[nodesep=-.3]{->}{k}{l}
+		%\aput[0pt]{0}{$r$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{l}{m}{12}{0}
+		\rput(\x{m},\y{m}){\rnode{m}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_4$}}}
+		\ncline[nodesep=-.5]{->}{l}{m}
+		%\aput[0pt]{0}{$l$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%\nccurve[angleA=-40,angleB=220,nodesep=-1]{->}{k}{m}
+		%\ncline[nodesep=-.5]{->}{k}{m}
+		%\bput[.5mm]{0}{$l$}
+		%\nccurve[angleA=45,angleB=135,nodesep=-1,ncurv=1.8]{->}{l}{l}
+		\nccurve[angleA=-45,angleB=-135,nodesep=-1,ncurv=.5]{->}{k}{m}
+		\psrelpoint{m}{n}{12}{0}
+		\rput(\x{n},\y{n}){\rnode{n}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_6$}}}
+		\ncline[nodesep=-.5]{->}{m}{n}
+		%\aput[0pt]{0}{$l$}
+		\end{pspicture}
+		}
+}
+}
+\newcommand{\Gex} % required
+{\scalebox{.75}{
+\large
+{\psset{unit=.9mm}
+\psset{linewidth=.3mm}
+		\begin{pspicture}(1,-9)(45,-2)
+%\psframe(-1,-8)(42,1)
+		\psrelpoint{origin}{k}{8}{-6}
+		\rput(\x{k},\y{k}){\rnode{k}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=1.1]{$x$}}}
+		\psrelpoint{origin}{j}{-1}{-6}
+		\rput(\x{j},\y{j}){\rnode{j}{}}
+		\ncline[linewidth=.4,doubleline=true]{->}{j}{k}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{k}{l}{12}{0}
+		\rput(\x{l},\y{l}){\rnode{l}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.6]{$r_3$}}}
+		\ncline[nodesep=-.3]{->}{k}{l}
+		%\aput[0pt]{0}{$r$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{l}{m}{12}{0}
+		\rput(\x{m},\y{m}){\rnode{m}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_4$}}}
+		\ncline[nodesep=-.5]{->}{l}{m}
+		%\aput[0pt]{0}{$l$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%\nccurve[angleA=-40,angleB=220,nodesep=-1]{->}{k}{m}
+		%\ncline[nodesep=-.5]{->}{k}{m}
+		%\bput[.5mm]{0}{$l$}
+		\nccurve[angleA=45,angleB=135,nodesep=-1,ncurv=1.8]{->}{l}{l}
+		\nccurve[angleA=-45,angleB=-135,nodesep=-1,ncurv=.5]{->}{k}{m}
+		\psrelpoint{m}{n}{12}{0}
+		\rput(\x{n},\y{n}){\rnode{n}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_6$}}}
+		\ncline[nodesep=-.5]{->}{m}{n}
+		%\aput[0pt]{0}{$l$}
+		\end{pspicture}
+		}
+}
+}
+\newcommand{\Ggx} % required
+{\scalebox{.75}{
+\large
+{\psset{unit=.9mm}
+\psset{linewidth=.3mm}
+		\begin{pspicture}(1,-9)(45,-2)
+%\psframe(-1,-8)(42,1)
+		\psrelpoint{origin}{k}{8}{-6}
+		\rput(\x{k},\y{k}){\rnode{k}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=1.1]{$x$}}}
+		\psrelpoint{origin}{j}{-1}{-6}
+		\rput(\x{j},\y{j}){\rnode{j}{}}
+		\ncline[linewidth=.4,doubleline=true]{->}{j}{k}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{k}{l}{12}{0}
+		\rput(\x{l},\y{l}){\rnode{l}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.6]{$r_3$}}}
+		\ncline[nodesep=-.3]{->}{k}{l}
+		%\aput[0pt]{0}{$r$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{l}{m}{12}{0}
+		\rput(\x{m},\y{m}){\rnode{m}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_4$}}}
+		\ncline[nodesep=-.5]{->}{l}{m}
+		%\aput[0pt]{0}{$l$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%\nccurve[angleA=-40,angleB=220,nodesep=-1]{->}{k}{m}
+		%\ncline[nodesep=-.5]{->}{k}{m}
+		%\bput[.5mm]{0}{$l$}
+		\nccurve[angleA=45,angleB=135,nodesep=-1,ncurv=1.8]{->}{l}{l}
+		%\nccurve[angleA=-45,angleB=-135,nodesep=-1,ncurv=.5]{->}{k}{m}
+		\psrelpoint{m}{n}{12}{0}
+		\rput(\x{n},\y{n}){\rnode{n}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_6$}}}
+		\ncline[nodesep=-.5]{->}{m}{n}
+		%\aput[0pt]{0}{$l$}
+		\end{pspicture}
+		}
+}
+}
+\newcommand{\Gay} % required
+{\scalebox{.8}{
+\large
+{\psset{unit=.9mm}
+\psset{linewidth=.3mm}
+		\begin{pspicture}(5,-3.5)(12,0)
+%\psframe(-1,-2)(32,6)
+		\psrelpoint{origin}{i}{8}{-2}
+		\rput(\x{i},\y{i}){\rnode{i}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=1.1]{$y$}}}
+		\psrelpoint{origin}{j}{-1}{-2}
+		\rput(\x{j},\y{j}){\rnode{j}{}}
+		\ncline[linewidth=.4,doubleline=true]{->}{j}{i}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%\psrelpoint{i}{m}{10}{0}
+		%\rput(\x{m},\y{m}){\rnode{m}{\pscirclebox[framesep=.5]{$l_5$}}}
+		%\ncline{->}{i}{m}
+		%%\aput[0pt]{0}{$l$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%\psrelpoint{i}{n}{10}{0}
+		%\rput(\x{n},\y{n}){\rnode{n}{\pscirclebox[framesep=.5]{$l_7$}}}
+		%\ncline{->}{i}{n}
+		%%\aput[0pt]{0}{$l$}
+		\end{pspicture}
+		}
+}}
+
+\newcommand{\Gby} %required
+{\scalebox{.8}{
+\large
+{\psset{unit=.9mm}
+\psset{linewidth=.3mm}
+		\begin{pspicture}(5,-3.5)(23,0)
+%\psframe(-1,-2)(32,6)
+		\psrelpoint{origin}{i}{8}{-2}
+		\rput(\x{i},\y{i}){\rnode{i}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=1.1]{$y$}}}
+		\psrelpoint{origin}{j}{-1}{-2}
+		\rput(\x{j},\y{j}){\rnode{j}{}}
+		\ncline[linewidth=.4,doubleline=true]{->}{j}{i}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%\psrelpoint{i}{m}{12}{0}
+		%\rput(\x{m},\y{m}){\rnode{m}{\pscirclebox[framesep=.5]{$l_5$}}}
+		%\ncline{->}{i}{m}
+		%\aput[0pt]{0}{$l$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		\psrelpoint{i}{n}{12}{0}
+		\rput(\x{n},\y{n}){\rnode{n}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=.5]{$l_6$}}}
+		\ncline{->}{i}{n}
+		%\aput[0pt]{0}{$l$}
+		\end{pspicture}
+		}
+}}
+\newcommand{\Gaz} % required
+{\scalebox{.85}{
+\large
+{\psset{unit=.9mm}
+\psset{linewidth=.3mm}
+		\begin{pspicture}(0,-3.5)(10,0)
+%\psframe(-1,-2)(32,6)
+		\psrelpoint{origin}{i}{8}{-2}
+		\rput(\x{i},\y{i}){\rnode{i}{\pscirclebox[linestyle=none,fillstyle=solid,
+				fillcolor=yellow,framesep=1.1]{$z$}}}
+		\psrelpoint{origin}{j}{-1}{-2}
+		\rput(\x{j},\y{j}){\rnode{j}{}}
+		\ncline[linewidth=.4,doubleline=true]{->}{j}{i}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%\psrelpoint{i}{m}{12}{0}
+		%\rput(\x{m},\y{m}){\rnode{m}{\pscirclebox[framesep=.5]{$l_5$}}}
+		%\ncline{->}{i}{m}
+		%%\aput[0pt]{0}{$l$}
+		%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+		%\psrelpoint{i}{n}{12}{0}
+		%\rput(\x{n},\y{n}){\rnode{n}{\pscirclebox[framesep=.5]{$l_7$}}}
+		%\ncline{->}{i}{n}
+		%\aput[0pt]{0}{$l$}
+		\end{pspicture}
+		}
+}}
+
+\psset{unit=1mm}
+\newcommand{\memGraph}{%
+\begin{pspicture}(0,0)(38,20)
+\psframe(0,0)(38,20)
+%\psframe[linestyle=none,fillstyle=solid,fillcolor=lightyellow](12,0)(40,50)
+%\psframe[linestyle=none,fillstyle=solid,fillcolor=lightyellow](0,0)(10,50)
+\putnode{n0}{origin}{2}{16}{\pscirclebox[linestyle=none]{$x$}}
+\putnode{n1}{n0}{0}{-12}{\pscirclebox[linestyle=none]{$y$}}
+\putnode{n01}{n0}{10}{0}{\pscirclebox[framesep=2.8]{}}
+\putnode{n11}{n1}{10}{0}{\pscirclebox[framesep=2.8]{}}
+\putnode{n3}{n01}{10}{-6}{\pscirclebox[framesep=2.8]{}}
+\putnode{n4}{n3}{12}{0}{\pscirclebox[framesep=2.8]{}}
+%
+\ncline[nodesepA=-.5]{->}{n0}{n01}
+\ncline[nodesepA=-.6]{->}{n1}{n11}
+\ncline[nodesep=-.5]{->}{n01}{n3}
+\aput[2pt](.5){$l$}
+\ncline[nodesep=-.5]{->}{n11}{n3}
+\bput[2pt](.5){$r$}
+\ncline{->}{n3}{n4}
+\aput[2pt](.5){$n$}
+\end{pspicture}
+}
+%\setbeamertemplate{frametitle}[default][center]
+%\setbeamerfont{page number in head/foot}{size=\tiny}
+%\setbeamertemplate{headline}[frame number]
+%\usetheme{CambridgeUS}    
+%\usecolortheme[named=Green]{structure} 
+%\usetheme{Boadilla}
+
+
+\begin{document}
+
+\frame[plain]{\titlepage}
+
+\frame{
+\frametitle{Outline of the talk}
+\begin{itemize}
+  \item Incremental Data Flow analysis
+  \item Requirements
+  \begin{itemize}
+   \item Present Architectures
+   \item Required Architecture
+  \end{itemize}
+
+  \item Incremental Analysis in details
+%   \item Requirements to implement Incremental analysis in PRISM
+  \end{itemize}
+}
+
+\part{Incremental Data Flow analysis}
+\frame{\partpage}
+
+\frame{
+\frametitle{Why Incremental Analysis?}
+When program undergoes changes:
+\begin{itemize}
+ \item Some or all computed data flow information become invalid
+ \item Recomputation is required
+\end{itemize}
+
+}
+
+
+\frame{
+\frametitle{Motivating Example - Available Expression Analysis}
+\begin{pspicture}(0,0)(100,80)
+% \psframe(0,0)(100,90)
+\onslide<1->
+\putnode{n1}{origin}{60}{70}{%
+     \psframebox[linewidth=.3,framesep=0.3]{\begin{tabular}{c} $a*b$ \\ $b+d$
+                                             
+                                            \end{tabular}
+}}
+\putnode{a}{n1}{-13}{0}{n1}
+\putnode{n2}{n1}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=1.5]{$a+b$}}
+\putnode{b}{n2}{10}{0}{n2}
+\putnode{n3}{n2}{-20}{-13}{%
+     \psframebox[linewidth=.3,framesep=1.5]{$b+d$}}
+\putnode{c}{n3}{-10}{0}{n3}
+\putnode{n4}{n3}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=0.3]{\begin{tabular}{c} $a=1$ \\ $a+b$
+                                             \end{tabular}
+}}
+\putnode{d}{n4}{-12}{0}{n4}
+\putnode{n5}{n2}{20}{-20}{%
+     \psframebox[linewidth=.3,framesep=1.5]{$d=1$}}
+\putnode{e}{n5}{-10}{0}{n5}
+\putnode{n6}{n5}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=1.5]{$a+b$}}
+\putnode{f}{n6}{-10}{0}{n6}
+
+\putnode{n7}{n6}{0}{-15}{%
+   \psframebox[linewidth=.3,framesep=0.7]{%
+   \begin{tabular}{c|c|c}
+			$a*b$ & $b+d$ & $a+b$\\
+			\end{tabular}}}
+\putnode{n8}{n7}{-30}{0}{Bit Vector}
+
+\ncline{->}{n1}{n2}
+\ncline{->}{n2}{n3}
+\ncline{->}{n2}{n5}
+\ncline{->}{n3}{n4}
+\ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=19,
+		linearc=1,offsetB=1]{->}{n4}{n3}
+\ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=-10,
+		linearc=0.8,offsetB=1, offsetA=2]{->}{n5}{n2}
+\ncline{->}{n5}{n6}
+
+\onslide<2-7>
+\putnode{g}{n1}{-40}{8}{1st Iteration}
+
+\onslide<3->
+\putnode{g}{n1}{-12}{5}{\blue$\langle000\rangle$}
+
+\onslide<4->
+\putnode{g}{n1}{-12}{-5}{\blue$\langle110\rangle$}
+
+\onslide<5-7>
+\putnode{g}{n2}{-10}{4}{\blue$\langle110\rangle$}
+
+\onslide<6-7>
+\putnode{g}{n2}{-10}{-4}{\blue$\langle111\rangle$}
+\putnode{g}{n5}{-10}{4}{\blue$\langle111\rangle$}
+
+\onslide<6-8>
+\putnode{g}{n3}{-10}{4}{\blue$\langle111\rangle$}
+
+\onslide<8->
+\putnode{g}{n1}{-40}{8}{2nd Iteration}
+
+\onslide<7-8>
+\putnode{g}{n3}{-10}{-4}{\blue$\langle111\rangle$}
+\putnode{g}{n4}{-12}{5}{\blue$\langle111\rangle$}
+\putnode{g}{n4}{-12}{-5}{\blue$\langle011\rangle$}
+\putnode{g}{n5}{-10}{-4}{\blue$\langle101\rangle$}
+\putnode{g}{n6}{-10}{4}{\blue$\langle101\rangle$}
+\putnode{g}{n6}{-10}{-4}{\blue$\langle101\rangle$}
+
+\onslide<8->
+\putnode{g}{n2}{-10}{4}{\red$\langle100\rangle$}
+\putnode{g}{n2}{-10}{-4}{\red$\langle101\rangle$}
+% \putnode{g}{n3}{-10}{4}{\red$\langle101\rangle$}
+\putnode{g}{n5}{-10}{4}{\red$\langle101\rangle$}
+
+\onslide<9->
+\putnode{g}{n3}{-10}{4}{\red$\langle001\rangle$}
+\putnode{g}{n3}{-10}{-4}{\red$\langle001\rangle$}
+\putnode{g}{n4}{-12}{5}{\red$\langle001\rangle$}
+\putnode{g}{n4}{-12}{-5}{\blue$\langle011\rangle$}
+\putnode{g}{n6}{-10}{4}{\blue$\langle101\rangle$}
+\putnode{g}{n6}{-10}{-4}{\blue$\langle101\rangle$}
+\putnode{g}{n5}{-10}{-4}{\blue$\langle101\rangle$}
+
+\end{pspicture}
+}
+
+
+
+
+\frame{ 
+\frametitle{Motivating Example - Available Expression Analysis}
+\begin{itemize}
+ \item It requires 3 iterations to converge
+\end{itemize}
+}
+
+\frame{
+\frametitle{Motivating Example - Available Expression Analysis }
+\begin{pspicture}(0,0)(100,80)
+% \psframe(0,0)(100,90)
+\onslide<1->
+\putnode{n1}{origin}{40}{70}{%
+     \psframebox[linewidth=.3,framesep=0.3]{\begin{tabular}{c} $a*b$ \\ $b+d$
+                                             
+                                            \end{tabular}
+}}
+\putnode{a}{n1}{-13}{0}{n1}
+\putnode{n2}{n1}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=1.5]{$a+b$}}
+\putnode{b}{n2}{10}{0}{n2}
+\putnode{n3}{n2}{-20}{-13}{%
+     \psframebox[linewidth=.3,framesep=1.5]{$b+d$}}
+\putnode{c}{n3}{-10}{0}{n3}
+\putnode{n4}{n3}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=0.3]{\begin{tabular}{c} $a=1$ \\ $a+b$
+                                             \end{tabular}
+}}
+\putnode{d}{n4}{-12}{0}{n4}
+\putnode{n5}{n2}{20}{-20}{%
+     \psframebox[linewidth=.3,framesep=1.5]{$d=1$}}
+\putnode{e}{n5}{-10}{0}{n5}
+\putnode{n6}{n5}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.5]{\hspace{10mm}}}
+\putnode{x}{n6}{0}{0}{$a+b$}
+\putnode{f}{n6}{-10}{0}{n6}
+
+\putnode{n7}{n6}{0}{-15}{%
+   \psframebox[linewidth=.3,framesep=0.7]{%
+   \begin{tabular}{c|c|c}
+			$a*b$ & $b+d$ & $a+b$\\
+			\end{tabular}}}
+\putnode{n8}{n7}{-30}{0}{Bit Vector}
+
+\ncline{->}{n1}{n2}
+\ncline{->}{n2}{n3}
+\ncline{->}{n2}{n5}
+\ncline{->}{n3}{n4}
+\ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=19,
+		linearc=1,offsetB=1]{->}{n4}{n3}
+\ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=-10,
+		linearc=0.8,offsetB=1, offsetA=2]{->}{n5}{n2}
+\ncline{->}{n5}{n6}
+
+\onslide<2->
+\putnode{x}{n6}{0}{0}{\red \sout{$a+b$}}
+ \onslide<3->
+\putnode{g}{n1}{-12}{5}{\blue$\langle000\rangle$}
+\putnode{g}{n1}{-12}{-5}{\blue$\langle110\rangle$}
+\putnode{g}{n2}{-10}{4}{\blue$\langle100\rangle$}
+\putnode{g}{n2}{-10}{-4}{\blue$\langle101\rangle$}
+\putnode{g}{n5}{-10}{4}{\blue$\langle101\rangle$}
+\putnode{g}{n3}{-10}{4}{\blue$\langle001\rangle$}
+\putnode{g}{n3}{-10}{-4}{\blue$\langle001\rangle$}
+\putnode{g}{n4}{-12}{5}{\blue$\langle001\rangle$}
+\putnode{g}{n4}{-12}{-5}{\blue$\langle011\rangle$}
+\putnode{g}{n5}{-10}{-4}{\blue$\langle101\rangle$}
+\putnode{g}{n6}{-10}{4}{\blue$\langle101\rangle$}
+\putnode{g}{n6}{-10}{-4}{\blue$\langle101\rangle$}
+
+\putnode{h}{n1}{45}{0}{\red No Change in data flow values}
+
+\end{pspicture}
+}
+
+\frame{ 
+\frametitle{Motivating Example - Available Expression Analysis}
+\begin{itemize}
+ \item Recomputing the values from the scratch is very inefficient 
+ \item Need an incremental analysis:
+      \begin{itemize}
+       \item modifies only affected data flow information
+       \item more cost effective then \textbf{exhaustive} analysis in terms of space and time
+      \end{itemize}
+\end{itemize}
+}
+
+\part{Requirements}
+\frame{\partpage}
+
+\frame{
+\frametitle{Present Architecture of PRISM}
+\onslide<1->
+\psset{unit=1mm}
+\psset{linewidth=.3mm}
+\psset{framearc=.1}
+\begin{pspicture}(25,-25)(38,64)
+ \putnode{n0}{origin}{50}{50}{Program} 
+
+\onslide<2->
+\putnode{n1}{n0}{40}{0}{\psframebox{IR generator} }
+\ncline{->}{n0}{n1}
+
+\onslide<3->
+\putnode{n2}{n0}{70}{0}{IR} 
+\ncline{->}{n1}{n2}
+
+\onslide<4->
+\putnode{n3}{n0}{70}{-25}{\psframebox{Generated analyzer} }
+\ncline{->}{n2}{n3}
+
+\onslide<5->
+\putnode{n7}{n3}{-80}{-10}{.java files}
+\putnode{n6}{n3}{-80}{10}{.klg files}
+
+\onslide<6->
+\putnode{n5}{n3}{-60}{0}{\psframebox{Kulang Compiler} }
+
+\onslide<7->
+\nccurve[ncurv=0.5,angleA=0,angleB=135]{->}{n6}{n5}
+
+\onslide<8->
+\ncline{->}{n5}{n3}\aput(0.4){Generated}
+\nccurve[ncurv=0.5,angleA=0,angleB=225]{->}{n7}{n3}\aput(0.5){Copied}
+
+\onslide<9->
+\putnode{n4}{n0}{70}{-50}{Output reports}
+\ncline{->}{n3}{n4}
+
+\onslide<10->
+\putnode{n5}{n2}{20}{-10}{\psframebox{\red Old IR}}
+\ncline{->}{n5}{n3}
+\end{pspicture}
+}
+\frame{
+\frametitle{Present architecture of analyser generator}
+\onslide<1->
+\psset{unit=1mm}
+\psset{linewidth=.3mm}
+\psset{framearc=.1}
+\begin{pspicture}(-20,10)(105,80)
+% \psframe(-20,10)(105,80)
+
+\putnode{n2}{origin}{45}{30}{%
+     \psframebox[linewidth=.3,framesep=5.7]{Solver}}
+
+    
+\onslide<2->    
+\putnode{n1}{n2}{-40}{0}{%
+     \textbf{Generated IR}}
+ \putnode{n4}{n2}{-40}{30}{%
+      \psframebox[linewidth=.3,framesep=1.7]{\begin{tabular}{c}
+                                             Generated \\
+                                             files by \\
+                                             kulang compiler
+                                             \end{tabular}
+}}
+
+\putnode{n5}{n2}{0}{30}{%
+      \psframebox[linewidth=.3,framesep=1.7]{Utility functions}}
+ 
+\putnode{n6}{n2}{40}{30}{%
+      \psframebox[linewidth=.3,framesep=1.7]{\begin{tabular}{c}
+                                             Data flow \\
+                                             analysis API
+                                             \end{tabular}
+}}
+\ncline{->}{n1}{n2}
+\ncline{->}{n4}{n2}
+\ncline{->}{n5}{n2}
+\ncline{->}{n6}{n2} 
+
+\onslide<3->
+ \putnode{n3}{n2}{40}{0}{%
+      \textbf{Result}}
+\ncline{->}{n2}{n3}
+      
+ 
+\end{pspicture}
+
+}
+
+
+
+\frame{
+\frametitle{Required architecture of analyser generator}
+\onslide<1->
+\psset{unit=1mm}
+\psset{linewidth=.3mm}
+\psset{framearc=.1}
+\begin{pspicture}(-20,10)(105,80)
+% \psframe(-20,10)(105,80)
+
+\putnode{n1}{origin}{-10}{80}{%
+     \textbf{Generated IR}}
+\putnode{n2}{n1}{0}{-10}{%
+     \textbf{old IR}}
+
+\onslide<2->
+\putnode{n3}{n1}{55}{-5}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Detect changed nodes}}
+
+\onslide<3->
+\ncline{->}{n1}{n3}
+\ncline{->}{n2}{n3}
+
+\onslide<4->
+\putnode{n4}{n3}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Detect affected region}}
+     
+\onslide<5->
+\ncline{->}{n3}{n4}
+
+\onslide<6->
+\putnode{n5}{n4}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Compute Boundary nodes}}
+
+\onslide<7->
+\ncline{->}{n4}{n5} 
+
+\onslide<8->
+\putnode{n6}{n5}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Update Old Solution}}
+ 
+ \onslide<9->
+ \ncline{->}{n5}{n6}
+
+\onslide<10->
+ \putnode{n7}{n6}{-50}{20}{%
+      \psframebox[linewidth=.3,framesep=1.7]{\begin{tabular}{c}
+                                             Generated \\
+                                             files by \\
+                                             kulang compiler
+                                             \end{tabular}
+}}
+\putnode{n8}{n7}{0}{-20}{%
+      \psframebox[linewidth=.3,framesep=1.7]{Utility functions}}
+ 
+\putnode{n9}{n8}{0}{-20}{%
+      \psframebox[linewidth=.3,framesep=1.7]{\begin{tabular}{c}
+                                             Data flow \\
+                                             analysis API
+                                             \end{tabular}
+}}     
+
+\putnode{n13}{n6}{45}{0}{%
+      \psframebox[linewidth=.3,framesep=1.7]{Old Solution}}
+
+\ncline{->}{n7}{n6}
+\ncline{->}{n8}{n6}
+\ncline{->}{n9}{n6}
+\ncline{->}{n13}{n6}
+\onslide<11->
+\putnode{n10}{n6}{0}{-20}{%
+      \textbf{Result}}
+\ncline{->}{n6}{n10}
+
+\onslide<12->
+\putnode{n11}{n5}{0}{0}{%
+      \psframebox[linestyle=dashed, linecolor=red, linewidth=.3,framesep=23.7]{}}
+
+\putnode{n12}{n10}{20}{5}{%
+      \textbf{\red Solver}}
+
+
+    
+% \onslide<2->    
+% \putnode{n1}{n2}{-40}{0}{%
+%      \textbf{Generated IR}}
+%  \putnode{n4}{n2}{-40}{30}{%
+%       \psframebox[linewidth=.3,framesep=1.7]{\begin{tabular}{c}
+%                                              Generated \\
+%                                              files by \\
+%                                              kulang compiler
+%                                              \end{tabular}
+% }}
+% 
+% \putnode{n5}{n2}{0}{30}{%
+%       \psframebox[linewidth=.3,framesep=1.7]{Utility functions}}
+%  
+% \putnode{n6}{n2}{40}{30}{%
+%       \psframebox[linewidth=.3,framesep=1.7]{\begin{tabular}{c}
+%                                              Data flow \\
+%                                              analysis API
+%                                              \end{tabular}
+% }}
+% \ncline{->}{n1}{n2}
+% \ncline{->}{n4}{n2}
+% \ncline{->}{n5}{n2}
+% \ncline{->}{n6}{n2} 
+% 
+% \onslide<3->
+%  \putnode{n3}{n2}{40}{0}{%
+%       \textbf{Result}}
+% \ncline{->}{n2}{n3}
+      
+ 
+\end{pspicture}
+
+}
+
+
+% 
+% \frame{ 
+% \frametitle{Architecture of Analyser generator}
+% \onslide<1->
+% \psset{unit=1mm}
+% \psset{linewidth=.3mm}
+% \psset{framearc=.1}
+% \begin{pspicture}(-20,10)(105,80)
+% % \psframe(-20,10)(105,80)
+% 
+% \putnode{n2}{origin}{60}{30}{%
+%      \psframebox[linewidth=.3,framesep=3.7]{Solver}}
+% 
+%     
+% \onslide<2->    
+%   
+%  \putnode{n4}{n2}{-60}{30}{%
+%       \psframebox[linewidth=.3,framesep=1.7]{\begin{tabular}{c}
+%                                              Generated \\
+%                                              files by \\
+%                                              kulang compiler
+%                                              \end{tabular}
+% }}
+% 
+% \putnode{n5}{n2}{-20}{30}{%
+%       \psframebox[linewidth=.3,framesep=1.7]{Utility functions}}
+%  
+% \putnode{n6}{n2}{20}{30}{%
+%       \psframebox[linewidth=.3,framesep=1.7]{\begin{tabular}{c}
+%                                              Data flow \\
+%                                              analysis API
+%                                              \end{tabular}
+% }}
+% \ncline{->}{n1}{n2}
+% \ncline{->}{n4}{n2}
+% \ncline{->}{n5}{n2}
+% \ncline{->}{n6}{n2} 
+% 
+% \onslide<3->
+% \putnode{n1}{n2}{-70}{8}{%
+%      \textbf{Generated IR}}
+% \putnode{n7}{n2}{-70}{-10}{%
+%      \textbf{Old IR}}
+%      
+% \onslide<4->
+% \putnode{n8}{n2}{-40}{0}{%
+%      \psframebox[linewidth=.3,framesep=1.7]{Compute Affected region}}
+% \onslide<5->
+% \ncline{->}{n1}{n8}
+% \ncline{->}{n7}{n8}
+% 
+% \onslide<6->
+% \ncline{->}{n8}{n2}
+% 
+% \onslide<7->
+%  \putnode{n3}{n2}{30}{0}{%
+%       \textbf{Result}}
+% \ncline{->}{n2}{n3}
+%       
+%  
+% \end{pspicture}
+% 
+% }
+
+% \frame{
+% \frametitle{Requirements}
+% To implement incremental analysis in PRISM we need:
+% \begin{itemize}
+%  \item old data flow information
+%  \item how to read old data flow information
+% \end{itemize}
+% 
+% }
+
+
+\part{Incremental analysis in details}
+\frame{\partpage}
+
+
+\frame{
+\frametitle{Flow functions in Bit-vector framework}
+\begin{itemize}
+ \item Possible flow functions:
+	\begin{itemize}
+	 \item Raise : Results is always Top
+	 \item Lower : Results is always Bottom
+	 \item Propagate : Propagates the value from one program point to another
+	\end{itemize}
+\end{itemize}
+}
+
+\frame{ 
+\frametitle{Example for flow functions}
+\begin{pspicture}(0,0)(0,50)
+%%\psframe(0,0)(50,50)
+\onslide<1->
+ \putnode{n1}{origin}{35}{40}{%
+      \psframebox[linewidth=.3,framesep=2.5, framearc=.4]{\hspace{10mm}}}
+%  \onslide<1->
+\putnode{a0}{n1}{30}{20}{\textbf{Available Expression Analysis}}
+\putnode{a}{n1}{-10}{0}{n1}
+\putnode{n2}{n1}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.5, framearc=.4]{\hspace{10mm}}}
+\putnode{n3}{n2}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.5, framearc=.4]{\hspace{10mm}}}
+
+\putnode{a}{n3}{-10}{0}{n3}
+% \putnode{a1}{n3}{0}{-10}{(a)}
+ \ncline{->}{n1}{n2}
+\ncline{->}{n2}{n3}
+
+\onslide<1-3>
+\putnode{a}{n2}{-10}{0}{n2}
+
+\onslide<1-1>
+\putnode{z}{n1}{0}{0}{$a*b$}
+
+\onslide<1-5>
+ \putnode{z1}{n3}{0}{0}{$b=1$}
+
+\onslide<2-3>
+\putnode{a1}{n1}{40}{0}{\textbf{Raise Function}}
+\putnode{z}{n1}{0}{0}{\red$a*b$}
+\putnode{a2}{a1}{10}{-15}{\begin{tabular}{l}
+                         Gen$_1 = 1$\\
+                         Kill$_1 = 0$ \\
+                         IN$_1 = 0$ \\
+                         OUT$_1 = $Gen$_1 \cup$ (IN$_1$-Kill$_1$)  = 1\\
+                        \end{tabular}
+}
+
+\onslide<3-3>
+\putnode{b}{a1}{0}{-30}{\red Result is always top}
+
+\onslide<3->
+\putnode{z}{n1}{0}{0}{$a*b$}
+
+\onslide<4-5>
+\putnode{a1}{n1}{40}{0}{\textbf{Propagate Function}}
+\putnode{a}{n2}{-10}{0}{\red n2}	
+\putnode{a2}{a1}{10}{-15}{\begin{tabular}{l}
+                         Gen$_2 = 0$\\
+                         Kill$_2 = 0$ \\
+                         IN$_2 = 1$ \\
+                         OUT$_2 = $Gen$_2 \cup$ (IN$_2$-Kill$_2$) = IN$_2$ = 1\\
+                        \end{tabular}
+}
+
+\onslide<5-5>
+\putnode{b}{a1}{10}{-30}{\red Propagates the value at IN to OUT}
+ 
+\onslide<6->
+\putnode{a}{n2}{-10}{0}{n2}
+\putnode{z1}{n3}{0}{0}{\red$b=1$}
+\putnode{a1}{n1}{40}{0}{\textbf{Lower Function}}
+\putnode{a2}{a1}{10}{-15}{\begin{tabular}{l}
+                         Gen$_3 = 0$\\
+                         Kill$_3 = 1$ \\
+                         IN$_3 = 1$ \\
+                         OUT$_3 = $Gen$_3 \cup$ (IN$_3$-Kill$_3$) = 0\\
+                        \end{tabular}
+}
+
+\onslide<7->
+\putnode{b}{a1}{10}{-30}{\red Result is always bottom}
+
+
+\end{pspicture}
+}
+
+\frame{ 
+\frametitle{Changes in Bit-vector framework}
+\begin{itemize}
+ \item As a consequence of some change in a node, some data flow values may:
+      \begin{itemize}
+       \item change from top to bottom
+       \item change from bottom to top
+       \item remain same
+      \end{itemize}
+\end{itemize}
+}
+
+\frame{ 
+\frametitle{Possible changes in flow functions for top to bottom change}
+\begin{pspicture}(0,10)(0,40)
+%%\psframe(0,0)(50,50)
+\putnode{n1}{origin}{45}{30}{%
+     \psframebox[linewidth=.3,framesep=2.5]{raise}}
+ \putnode{a}{n1}{0}{10}{\textit{old}}
+\putnode{n2}{n1}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.5]{propagate}}
+%  \putnode{a}{n2}{-10}{0}{n2}
+
+
+\putnode{n12}{n1}{30}{0}{%
+     \psframebox[linewidth=.3,framesep=2.5]{lower}}
+ \putnode{a}{n12}{0}{10}{\textit{new}}
+\putnode{n22}{n12}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.5]{propagate}}
+% \putnode{a}{n22}{-10}{0}{n2}
+% \putnode{a1}{n2}{15}{-10}{(a)}
+\ncline{->}{n1}{n12}
+\ncline{->}{n1}{n22}
+\ncline{->}{n2}{n12}
+
+\psline[linestyle=dotted](60,40)(60,10)
+
+\end{pspicture}
+}
+
+\frame{ 
+\frametitle{Possible changes in flow functions for bottom to top change}
+\begin{pspicture}(0,10)(0,40)
+\putnode{n1}{origin}{45}{30}{%
+     \psframebox[linewidth=.3,framesep=2.5]{lower}}
+ \putnode{a}{n1}{0}{10}{\textit{old}}
+\putnode{n2}{n1}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.5]{propagate}}
+%  \putnode{a}{n2}{-10}{0}{n2}
+
+
+\putnode{n12}{n1}{30}{0}{%
+     \psframebox[linewidth=.3,framesep=2.5]{raise}}
+ \putnode{a}{n12}{0}{10}{\textit{new}}
+\putnode{n22}{n12}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.5]{propagate}}
+% \putnode{a}{n22}{-10}{0}{n2}
+% \putnode{a1}{n2}{15}{-10}{(b)}
+\ncline{->}{n1}{n12}
+\ncline{->}{n1}{n22}
+\ncline{->}{n2}{n12}
+
+\psline[linestyle=dotted](60,40)(60,10)
+\end{pspicture}
+}
+
+\frame{ 
+\frametitle{Handling Top to Bottom change}
+\begin{itemize}
+ \item Top value is an intermediate value until data flow analysis is completed
+ \item Whenever there is top to bottom change, the changes can be propagated directly to its neighbouring nodes
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{Example for Top to Bottom change}
+\begin{pspicture}(0,0)(50,50)
+%%\psframe(0,0)(50,50)
+\onslide<1->
+\putnode{n1}{origin}{55}{40}{%
+     \psframebox[linewidth=.3,framesep=2.5, framearc=.4]{$b*c$}}
+\putnode{a}{n1}{-10}{0}{n1}
+\putnode{n2}{n1}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.5, framearc=.4]{\hspace{10mm}}}
+\putnode{b}{n2}{-11}{0}{n2}
+\putnode{n3}{n2}{0}{-15}{%
+      \psframebox[linewidth=.3,framesep=2.5, framearc=.4]{\hspace{10mm}}}
+\putnode{c}{n3}{-10}{0}{n3}
+\ncline{->}{n1}{n2}
+\ncline{->}{n2}{n3}
+\ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=-17,
+		linearc=0.5,offsetB=1]{->}{n3}{n2}
+\onslide<1-4>
+\putnode{a}{n3}{0}{0}{$b*c$}
+
+\onslide<1-4>
+\putnode{x}{n1}{5}{17}{\blue Initial Available Expression Analysis}
+		
+\onslide<2-5>
+\putnode{d}{n1}{-8}{4}{\blue0}
+\putnode{d}{n1}{-8}{-4}{\blue1}
+\putnode{e}{n3}{-8}{-4}{\blue1}
+
+\onslide<3-5>
+\putnode{f}{n2}{-8}{4}{\blue1}
+
+\onslide<4-5>
+\putnode{f}{n2}{-8}{-4}{\blue1}
+\putnode{e}{n3}{-8}{4}{\blue1}
+
+\onslide<5-5>
+% \putnode{d}{n1}{-3}{-6}{\red1}
+\putnode{a}{n3}{0}{0}{\red \sout{$b*c$}}
+
+\onslide<6->
+\putnode{a}{n3}{0}{0}{\red$b=$}
+\putnode{x}{n1}{5}{17}{\blue Top to Bottom change}
+\putnode{d}{n1}{-8}{4}{\lightblue0}
+\putnode{d}{n1}{-8}{-4}{\lightblue1}
+\putnode{e}{n3}{-8}{-4}{\lightblue1}
+\putnode{f}{n2}{-8}{4}{\lightblue1}
+\putnode{f}{n2}{-8}{-4}{\lightblue1}
+\putnode{e}{n3}{-8}{4}{\lightblue1}
+\putnode{w}{n2}{30}{0}{ \psframebox[linewidth=.3,framesep=1.5, framearc=.4]{Raise}}
+\putnode{y}{w}{25}{0}{ \psframebox[linewidth=.3,framesep=1.5, framearc=.4]{Lower}}
+\ncline{->}{w}{y}
+
+\onslide<7->
+\putnode{d}{n1}{8}{-4}{\blue1}
+\putnode{e}{n3}{8}{-4}{\red0}
+\putnode{x}{n1}{40}{0}{\red IN$_2$=OUT$_1 \cap$ OUT$_3$}
+\putnode{x1}{n3}{5}{-15}{\red Directly Propagate the change to its neighbour}
+\onslide<8->
+\putnode{f}{n2}{8}{4}{\red0}
+
+\onslide<9->
+\putnode{f}{n2}{8}{-4}{\red0}
+\putnode{e}{n3}{8}{4}{\red0}
+\end{pspicture}
+}
+
+\frame{ 
+\frametitle{Handling Bottom to Top change}
+\begin{itemize}
+ \item Bottom value is a final value even during analysis
+ \item Whenever there is bottom to top change, we cannot directly propagate the changes to its neighbouring nodes
+ \item Need some more processing
+\end{itemize}
+}
+
+\frame{
+\frametitle{Example for Bottom to Top change}
+\begin{pspicture}(0,0)(50,50)
+%%\psframe(0,0)(50,50)
+\onslide<1->
+\putnode{n1}{origin}{55}{40}{%
+     \psframebox[linewidth=.3,framesep=2.5, framearc=.4]{$b=$}}
+\putnode{a}{n1}{-10}{0}{n1}
+\putnode{n2}{n1}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.5, framearc=.4]{\hspace{10mm}}}
+\putnode{b}{n2}{-11}{0}{n2}
+\putnode{n3}{n2}{0}{-15}{%
+      \psframebox[linewidth=.3,framesep=2.5, framearc=.4]{\hspace{10mm}}}
+\putnode{c}{n3}{-10}{0}{n3}
+\ncline{->}{n1}{n2}
+\ncline{->}{n2}{n3}
+\ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=-17,
+		linearc=0.5,offsetB=1]{->}{n3}{n2}
+\onslide<1-4>
+\putnode{a}{n3}{0}{0}{$b=$}
+\onslide<1-4>
+\putnode{x}{n1}{5}{17}{\blue Initial Available Expression Analysis}		
+		
+\onslide<2-4>
+\putnode{d}{n1}{-8}{4}{\blue0}
+\putnode{d}{n1}{-8}{-4}{\blue0}
+\putnode{e}{n3}{-8}{-4}{\blue0}
+% \putnode{d}{n1}{-3}{-6}{\red0}
+% \putnode{e}{n3}{-3}{-6}{\red0}
+
+\onslide<3-4>
+\putnode{f}{n2}{-8}{4}{\blue0}
+% \putnode{f}{n2}{-3}{5}{\red0}
+
+\onslide<4-4>
+\putnode{f}{n2}{-8}{-4}{\blue0}
+\putnode{e}{n3}{-8}{4}{\blue0}
+% \putnode{f}{n2}{-3}{-5}{\red0}
+% \putnode{e}{n3}{-3}{6}{\red0}
+
+\onslide<5-5>
+% \putnode{d}{n1}{-3}{-6}{\red1}
+\putnode{a}{n3}{0}{0}{\red\sout{$b=$}}
+
+\onslide<6->
+\putnode{x}{n1}{5}{17}{\blue Bottom to Top change}
+\putnode{a}{n3}{0}{0}{\red$b*c$}
+\putnode{d}{n1}{-8}{4}{\lightblue0}
+\putnode{d}{n1}{-8}{-4}{\lightblue0}
+\putnode{e}{n3}{-8}{-4}{\lightblue0}
+\putnode{f}{n2}{-8}{4}{\lightblue0}
+\putnode{f}{n2}{-8}{-4}{\lightblue0}
+\putnode{e}{n3}{-8}{4}{\lightblue0}
+\putnode{w}{n2}{30}{0}{ \psframebox[linewidth=.3,framesep=1.5, framearc=.4]{Lower}}
+\putnode{y}{w}{25}{0}{ \psframebox[linewidth=.3,framesep=1.5, framearc=.4]{Raise}}
+\ncline{->}{w}{y}
+
+
+
+\onslide<7->
+\putnode{d}{n1}{8}{-4}{\blue0}
+\putnode{e}{n3}{8}{-4}{\red1}
+\putnode{x}{n1}{40}{0}{\red IN$_2$=OUT$_1 \cap$ OUT$_3$}
+\putnode{x1}{n3}{0}{-15}{\blue Cannot propagate the change to its neighbouring nodes}
+
+\onslide<8->
+\putnode{d}{n1}{8}{-4}{\blue0}
+\putnode{f}{n2}{8}{4}{\red0}
+
+\onslide<9->
+\putnode{f}{n2}{8}{-4}{\red0}
+\putnode{e}{n3}{8}{4}{\red0}
+\end{pspicture}
+}
+
+\frame{ 
+\frametitle{Bottom to Top change}
+\begin{itemize}
+ \item Need some more processing
+\end{itemize}
+}
+
+\frame{ 
+\frametitle{Bottom to Top change}
+\begin{itemize}
+ \onslide<1->
+ \item Steps to incorporate Bottom to Top change:
+ \begin{itemize}
+ \onslide<2->
+  \item Identify the data flow values which may becomes top
+  \onslide<3->
+  \item Find out the data flow values which must remain bottom due to the effect of some other property
+ \end{itemize}
+
+\end{itemize}
+}
+
+\frame{
+\frametitle{Motivating Example}
+\begin{pspicture}(0,0)(100,90)
+%%\psframe(0,0)(100,90)
+\onslide<1->
+\putnode{n1}{origin}{25}{80}{%
+     \psframebox[linewidth=.3,framesep=1.7]{ $a+b$}}
+\putnode{a}{n1}{-10}{0}{n1}
+
+\putnode{n2}{n1}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=1.7]{$a*b$}}
+\putnode{b}{n2}{-10}{0}{n2}
+
+\putnode{n3}{n2}{-20}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.7]{\hspace{10mm}}}
+
+\putnode{c}{n3}{10}{0}{n3}
+
+\putnode{n4}{n2}{20}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.5]{\hspace{10mm}}}
+\putnode{d}{n4}{-10}{0}{n4}
+
+\putnode{n5}{n2}{0}{-30}{%
+     \psframebox[linewidth=.3,framesep=1.7]{$a*c$}}
+\putnode{e}{n5}{-9}{0}{n5}
+
+\putnode{n6}{n5}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.5]{\hspace{10mm}}}
+\putnode{f}{n6}{-10}{0}{n6}
+\putnode{g}{n6}{40}{-7}{%
+     \psframebox[linewidth=.3,framesep=0.7]{\begin{tabular}{c|c|c}
+			  $a+b$ & $a*b$ & $a*c$\\                          
+                          \end{tabular}}}
+\ncline{->}{n1}{n2}
+\ncline{->}{n2}{n3}
+\ncline{->}{n3}{n5}
+\ncline{->}{n2}{n4}
+\ncline{->}{n4}{n5}
+\ncline{->}{n5}{n6}
+\ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=-30,
+		linearc=0.5,offsetA=2, offsetB=2]{->}{n5}{n2}
+\onslide<1-2>
+\putnode{x}{n3}{0}{0}{$b=2$}
+
+\onslide<2->
+\putnode{h}{n1}{65}{0}{Initial Available Expression Analysis}
+\putnode{x1}{n1}{-10}{5}{\blue$\langle000\rangle$}
+\putnode{x1}{n1}{-10}{-5}{\blue$\langle100\rangle$}
+\putnode{x1}{n2}{-10}{5}{\blue$\langle000\rangle$}
+\putnode{x1}{n2}{0}{-5}{\blue$\langle010\rangle$}
+\putnode{x1}{n3}{0}{5}{\blue$\langle010\rangle$}
+\putnode{x1}{n3}{0}{-5}{\blue$\langle000\rangle$}
+\putnode{x1}{n4}{0}{5}{\blue$\langle010\rangle$}
+\putnode{x1}{n4}{0}{-5}{\blue$\langle010\rangle$}
+\putnode{x1}{n5}{-11}{3}{\blue$\langle000\rangle$}
+\putnode{x1}{n5}{-10}{-5}{\blue$\langle001\rangle$}
+\putnode{x1}{n6}{-10}{5}{\blue$\langle001\rangle$}
+\putnode{x1}{n6}{-10}{-5}{\blue$\langle001\rangle$}
+
+
+
+
+\onslide<2-3>
+\putnode{i}{h}{3}{-25}{\begin{tabular}{c c c c c c c}
+			\hline
+			& \multicolumn{2}{c}{$a+b$} & \multicolumn{2}{c}{$a*b$} & \multicolumn{2}{c}{$a*c$} \\
+			\hline
+			Node & In & Out & In & Out & In & Out\\
+			\hline
+			1. & 0 & 1 & 0 & 0 & 0 & 0 \\
+			2. & 0 & 0 & 0 & 1 & 0 & 0 \\
+			3. & 0 & 0 & 1 & 0 & 0 & 0 \\
+			4. & 0 & 0 & 1 & 1 & 0 & 0 \\
+			5. & 0 & 0 & 0 & 0 & 0 & 1 \\
+			6. & 0 & 0 & 0 & 0 & 1 & 1\\
+			\hline
+			\end{tabular}}
+		
+\onslide<3->
+\putnode{x}{n3}{0}{0}{\red\sout{$b=2$}}
+	
+\onslide<4->
+\putnode{j}{n1}{50}{-30}{ \psframebox[linewidth=.3,framesep=0.7]{lower}}
+\putnode{k}{j}{30}{0}{ \psframebox[linewidth=.3,framesep=0.7]{propagate}}
+
+\onslide<5->
+\ncline{->}{j}{k}
+
+\onslide<6->
+\putnode{l}{k}{-15}{-10}{\red Bottom to Top change}
+
+\end{pspicture}
+}
+
+\frame{
+\frametitle{Motivating Example - Step 1}
+\begin{itemize}
+ \item The data flow values which were 0 and \textit{may} become 1 due to this change
+ \begin{itemize}
+ \item <2->Affected region
+ \end{itemize}
+\end{itemize}
+}
+
+\frame{
+ \frametitle{Motivating Example - Step 1}
+\begin{pspicture}(0,0)(100,90)
+%%\psframe(0,0)(100,90)
+\onslide<1->
+\putnode{n1}{origin}{25}{80}{%
+     \psframebox[linewidth=.3,framesep=1.7]{ $a+b$}}
+\putnode{a}{n1}{-10}{0}{n1}
+
+\putnode{n2}{n1}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=1.7]{$a*b$}}
+
+
+\putnode{n3}{n2}{-20}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.7]{\hspace{10mm}}}
+
+
+
+\putnode{n4}{n2}{20}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.5]{\hspace{10mm}}}
+
+
+\putnode{n5}{n2}{0}{-30}{%
+     \psframebox[linewidth=.3,framesep=1.7]{$a*c$}}
+
+
+\putnode{n6}{n5}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.5]{\hspace{10mm}}}
+
+\putnode{g}{n6}{40}{-7}{%
+     \psframebox[linewidth=.3,framesep=0.7]{\begin{tabular}{c|c|c}
+			  $a+b$ & $a*b$ & $a*c$\\                          
+                          \end{tabular}}}
+\ncline{->}{n1}{n2}
+\ncline{->}{n2}{n3}
+\ncline{->}{n3}{n5}
+\ncline{->}{n2}{n4}
+\ncline{->}{n4}{n5}
+\ncline{->}{n5}{n6}
+\ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=-30,
+		linearc=0.5,offsetA=2, offsetB=2]{->}{n5}{n2}
+
+
+\onslide<1->
+\putnode{x}{n3}{0}{0}{\red\sout{$b=2$}}
+
+\onslide<1-2>
+\putnode{b}{n2}{-10}{0}{n2}
+\putnode{c}{n3}{10}{0}{n3}
+\putnode{d}{n4}{-10}{0}{n4}
+\putnode{e}{n5}{-9}{0}{n5}
+\putnode{f}{n6}{-10}{0}{n6}
+
+\onslide<2->
+\putnode{c}{n3}{10}{0}{\red n3}
+\putnode{e}{n5}{-9}{0}{\red n5}
+\putnode{f}{n6}{-10}{0}{\red n6}
+
+\onslide<3->
+\putnode{b}{n2}{-10}{0}{\red n2}
+\putnode{d}{n4}{-10}{0}{n4}
+\onslide<3->
+\putnode{d}{n4}{-10}{0}{\red n4}
+
+\onslide<3-3>
+\putnode{h}{n1}{65}{-20}{Affected Region}
+\putnode{i}{h}{3}{-10}{\begin{tabular}{c} \red $\langle$ OUT$_3$ IN$_5$ OUT$_5,$ IN$_6,$ OUT$_6,$ \\ \red IN$_2 ,$ OUT$_2,$ IN$_4,$ OUT$_4,$ IN$_3 \rangle$
+                        \end{tabular}}
+		
+\onslide<4->
+\putnode{h}{n1}{65}{-10}{\blue Data flow values which may become 1}
+
+\onslide<1-11>		
+\putnode{x1}{n1}{-10}{5}{\blue$\langle000\rangle$}
+\putnode{x1}{n1}{-10}{-5}{\blue$\langle100\rangle$}
+
+\onslide<1-6>\putnode{x1}{n2}{-10}{5}{$\langle$\blue000$\rangle$}
+\onslide<1-7>\putnode{x1}{n2}{0}{-5}{$\langle$\blue010$\rangle$}
+\onslide<1-8>\putnode{x1}{n3}{0}{5}{\blue$\langle$010$\rangle$}
+\onslide<1-3>\putnode{x1}{n3}{0}{-5}{$\langle$\blue000$\rangle$}
+\onslide<1-8>\putnode{x1}{n4}{0}{5}{$\langle$\blue010$\rangle$}
+\onslide<1-9>\putnode{x1}{n4}{0}{-5}{$\langle$\blue010$\rangle$}
+\onslide<1-4>\putnode{x1}{n5}{-11}{3}{$\langle$\blue000$\rangle$}
+\onslide<1-5>\putnode{x1}{n5}{-10}{-5}{$\langle$\blue001$\rangle$}
+\onslide<1-6>\putnode{x1}{n6}{-10}{5}{$\langle$\blue001$\rangle$}
+\onslide<1-6>\putnode{x1}{n6}{-10}{-5}{$\langle$\blue001$\rangle$}
+
+
+\onslide<7-10>\putnode{x1}{n2}{-10}{5}{$\langle$\red00\blue0$\rangle$}
+\onslide<8-10>\putnode{x1}{n2}{0}{-5}{$\langle$\red0\blue10$\rangle$}
+\onslide<9-10>\putnode{x1}{n3}{0}{5}{\blue$\langle$\red0\blue10$\rangle$}
+\onslide<4-10>\putnode{x1}{n3}{0}{-5}{$\langle$\red00\blue0$\rangle$}
+\onslide<9-10>\putnode{x1}{n4}{0}{5}{$\langle$\red0\blue10$\rangle$}
+\onslide<10-10>\putnode{x1}{n4}{0}{-5}{$\langle$\red0\blue10$\rangle$}
+\onslide<5-10>\putnode{x1}{n5}{-11}{3}{$\langle$\red00\blue0$\rangle$}
+\onslide<6-10>\putnode{x1}{n5}{-10}{-5}{$\langle$\red00\blue1$\rangle$}
+\onslide<7-10>\putnode{x1}{n6}{-10}{5}{$\langle$\red00\blue1$\rangle$}
+\onslide<7-10>\putnode{x1}{n6}{-10}{-5}{$\langle$\red00\blue1$\rangle$}
+
+\onslide<11->
+\putnode{i}{h}{3}{-25}{\begin{tabular}{c c c c c c c }
+    \hline
+       & \multicolumn{2}{c}{$a+b$} & \multicolumn{2}{c}{$a*b$} & \multicolumn{2}{c}{$a*c$} \\
+    \hline
+      Node & In & Out & In & Out & In & Out\\
+   	\hline
+   	  1. &  &  &  &  &  &  \\
+   	  2. & 1 & 1 & 1 &  &  &  \\
+   	  3. & 1 & 1 &  & 1 &  &  \\
+   	  4. & 1 & 1 &  &  &  &  \\
+   	  5. & 1 & 1 & 1 & 1 &  &  \\
+   	  6. & 1 & 1 & 1 & 1 &  & \\
+      
+      \hline
+    \end{tabular}}
+
+    
+\putnode{x1}{n1}{-10}{5}{\blue$\langle000\rangle$}
+\putnode{x1}{n1}{-10}{-5}{\blue$\langle100\rangle$}
+\putnode{x1}{n2}{-10}{5}{$\langle$\red11\blue0$\rangle$}
+\putnode{x1}{n2}{0}{-5}{$\langle$\red1\blue10$\rangle$}
+\putnode{x1}{n3}{0}{5}{\blue$\langle$\red1\blue10$\rangle$}
+\putnode{x1}{n3}{0}{-5}{$\langle$\red11\blue0$\rangle$}
+\putnode{x1}{n4}{0}{5}{$\langle$\red1\blue10$\rangle$}
+\putnode{x1}{n4}{0}{-5}{$\langle$\red1\blue10$\rangle$}
+\putnode{x1}{n5}{-11}{3}{$\langle$\red11\blue0$\rangle$}
+\putnode{x1}{n5}{-10}{-5}{$\langle$\red11\blue1$\rangle$}
+\putnode{x1}{n6}{-10}{5}{$\langle$\red11\blue1$\rangle$}
+\putnode{x1}{n6}{-10}{-5}{$\langle$\red11\blue1$\rangle$}
+    
+    % \putnode{x}{n3}{0}{0}{\red$b=2$}
+		
+\end{pspicture}
+}
+
+\frame{
+\frametitle{Motivating Example - Step 2}
+\begin{itemize}
+ \item Find out the data flow values which must remain bottom due to the effect of some other property
+ \begin{itemize}
+ \item<2-> Identifying Boundary nodes
+ \item<3-> Computing values at boundary nodes and propagating them
+ \end{itemize}
+\end{itemize}
+}
+
+
+\frame{
+ \frametitle{Motivating Example - Step 2}
+\begin{pspicture}(0,0)(100,90)
+%%\psframe(0,0)(100,90)
+\onslide<1->
+\putnode{n1}{origin}{25}{80}{%
+     \psframebox[linewidth=.3,framesep=1.7]{ $a+b$}}
+\putnode{a}{n1}{-10}{0}{n1}
+
+\putnode{n2}{n1}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=1.7]{$a*b$}}
+
+
+\putnode{n3}{n2}{-20}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.7]{\hspace{10mm}}}
+
+
+
+\putnode{n4}{n2}{20}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.5]{\hspace{10mm}}}
+
+
+\putnode{n5}{n2}{0}{-30}{%
+     \psframebox[linewidth=.3,framesep=1.7]{$a*c$}}
+
+
+\putnode{n6}{n5}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.5]{\hspace{10mm}}}
+
+\putnode{g}{n6}{40}{-7}{%
+     \psframebox[linewidth=.3,framesep=0.7]{\begin{tabular}{c|c|c}
+			  $a+b$ & $a*b$ & $a*c$\\                          
+                          \end{tabular}}}
+\ncline{->}{n1}{n2}
+\ncline{->}{n2}{n3}
+\ncline{->}{n3}{n5}
+\ncline{->}{n2}{n4}
+\ncline{->}{n4}{n5}
+\ncline{->}{n5}{n6}
+\ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=-30,
+		linearc=0.5,offsetA=2, offsetB=2]{->}{n5}{n2}
+\onslide<1-5>
+\putnode{x}{n3}{0}{0}{\red\sout{$b=2$}}
+
+
+\onslide<1->
+\putnode{c}{n3}{10}{0}{\red n3}
+\putnode{e}{n5}{-9}{0}{\red n5}
+\putnode{f}{n6}{-10}{0}{\red n6}
+\putnode{d}{n4}{-10}{0}{\red n4}
+
+\onslide<1-2>
+\putnode{b}{n2}{-10}{0}{\red n2}
+
+\onslide<3-7>
+\putnode{b}{n2}{-10}{0}{\green n2}
+\onslide<3-3>
+\putnode{h}{n1}{65}{-20}{Node 2 is Boundary node}
+
+		
+\onslide<4-5>
+\putnode{h}{n1}{50}{7}{\blue Computing values at boundary node and propagating them}
+
+\onslide<4->
+\putnode{x1}{n1}{-10}{5}{\blue$\langle000\rangle$}
+\putnode{x1}{n1}{-10}{-5}{\blue$\langle100\rangle$}
+\putnode{x1}{n5}{-10}{-5}{$\langle$\blue111$\rangle$}
+
+\onslide<5-7>
+\putnode{x1}{n2}{-10}{5}{$\langle$\blue100$\rangle$}
+
+\onslide<6->
+\putnode{x1}{n2}{0}{-5}{$\langle$\blue110$\rangle$}
+\putnode{x1}{n3}{0}{5}{\blue$\langle$\blue110$\rangle$}
+\putnode{x1}{n4}{0}{5}{$\langle$\blue110$\rangle$}
+
+\onslide<7->
+\putnode{x1}{n3}{0}{-5}{$\langle$\blue110$\rangle$}
+\putnode{x1}{n4}{0}{-5}{$\langle$\blue110$\rangle$}
+\putnode{x1}{n5}{-11}{3}{$\langle$\blue110$\rangle$}
+\putnode{x1}{n6}{-10}{-5}{$\langle$\blue111$\rangle$}
+\putnode{x1}{n6}{-10}{5}{$\langle$\blue111$\rangle$}
+
+\onslide<8-8>
+\putnode{x1}{n2}{-10}{5}{$\langle$\blue1\red0\blue0$\rangle$}
+\putnode{h}{n1}{65}{-10}{\blue Values which must remain 0}
+\putnode{i}{h}{3}{-25}{\begin{tabular}{c c c c c c c }
+    \hline
+       & \multicolumn{2}{c}{$a+b$} & \multicolumn{2}{c}{$a*b$} & \multicolumn{2}{c}{$a*c$} \\
+    \hline
+      Node & In & Out & In & Out & In & Out\\
+   	\hline
+   	  1. &  &  &  &  &  &  \\
+   	  2. &  &  & 0 &  &  &  \\
+   	  3. &  &  &  &  &  &  \\
+   	  4. &  &  &  &  &  &  \\
+   	  5. &  & & &  &  &  \\
+   	  6. &  & & &  &  & \\
+      
+      \hline
+    \end{tabular}}
+\onslide<8->
+\putnode{b}{n2}{-10}{0}{\red n2}
+    
+\onslide<9->
+\putnode{x1}{n2}{-10}{5}{$\langle$\blue10\blue0$\rangle$}
+\putnode{h}{n1}{65}{-10}{\blue Final values}
+\putnode{i}{h}{3}{-25}{\begin{tabular}{c c c c c c c }
+    \hline
+       & \multicolumn{2}{c}{$a+b$} & \multicolumn{2}{c}{$a*b$} & \multicolumn{2}{c}{$a*c$} \\
+    \hline
+      Node & In & Out & In & Out & In & Out\\
+   	\hline
+   	  1. & 0 & 1 &0 & 0 & 0 & 0 \\
+   	  2. & 1 & 1 & 0 & 1 & 0 & 0  \\
+   	  3. & 1 & 1 & 1 & 1 & 0 & 0 \\
+   	  4. & 1 & 1 & 1 & 1 & 0 & 0 \\
+   	  5. & 1 & 1 & 1 & 1& 0 & 1 \\
+   	  6. & 1 & 1 & 1 & 1 & 1 & 1\\
+      
+      
+      \hline
+    \end{tabular}}
+    \end{pspicture}
+}
+
+
+\part{Thank You !}
+\frame{\partpage}
+
+\end{document}
