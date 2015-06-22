@@ -1959,6 +1959,113 @@ When program undergoes changes:
 
 }
 
+\part{Overview of PRISM}
+\frame{\partpage}
+
+\frame{
+\frametitle{PRISM}
+\begin{itemize}
+\item<1-> \alt<1> { PRISM is a program analyzer generator developed by TATA Research Development and Design Center (TRDDC)}
+
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{Old Architecture of PRISM}
+\begin{pspicture}(-20,15)(115,90)
+% \bsegin{psframe}(-20,15)(115,90)
+\putnode{n1}{origin}{60}{80}{%
+	  {\textbf{Program}}
+     }
+
+\putnode{n2}{n1}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=1.7]{IR Generator}}
+
+\putnode{n3}{n2}{0}{-10}{%
+     {\textbf{Generated IR}}}
+
+\putnode{n4}{n3}{0}{-15}{%
+      \psframebox[linewidth=.3,framesep=1.7]{Solver}}
+
+\putnode{n5}{n4}{30}{0}{{\textbf{Results}}}
+
+\putnode{n6}{n4}{-40}{0}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Kulang Compiler}}
+
+% \putnode{n8}{n6}{0}{15}{%
+%      {Copied}}
+% \rput(55,33){\rnode{a}{Generated}}
+\putnode{n7}{n6}{-30}{0}{%
+      {\textbf{.klg files}}}
+
+\putnode{n8}{n6}{5}{15}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Other Utility functions}}
+\putnode{n9}{n7}{57}{-7}{%
+     {Generated Java files}}
+
+\ncline{->}{n1}{n2}
+\ncline{->}{n2}{n3}
+\ncline{->}{n3}{n4}
+\ncline{->}{n4}{n5}
+\ncline{->}{n6}{n4}
+\ncline{->}{n7}{n6}
+% \nccurve[angleA=0, angleB=100, ncurv=0.5]{->}{n7}{n6}
+\ncline{->}{n8}{n4}
+% \end{psframe}
+
+\end{pspicture}
+}
+
+\frame{
+\frametitle{Architecture of Analyzer Generator}
+\onslide<1->
+\psset{unit=1mm}
+\psset{linewidth=.3mm}
+\psset{framearc=.1}
+\begin{pspicture}(-20,10)(105,80)
+% \psframe(-20,10)(105,80)
+
+\putnode{n2}{origin}{45}{30}{%
+     \psframebox[linewidth=.3,framesep=5.7]{Solver}}
+
+    
+\onslide<2->    
+\putnode{n1}{n2}{-40}{0}{%
+     \textbf{Generated IR}}
+ \putnode{n4}{n2}{-40}{30}{%
+      \psframebox[linewidth=.3,framesep=1.7]{\begin{tabular}{c}
+                                             Generated \\
+                                             files by \\
+                                             kulang compiler
+                                             \end{tabular}
+}}
+
+\putnode{n5}{n2}{0}{30}{%
+      \psframebox[linewidth=.3,framesep=1.7]{Utility functions}}
+ 
+\putnode{n6}{n2}{40}{30}{%
+      \psframebox[linewidth=.3,framesep=1.7]{\begin{tabular}{c}
+                                             Data flow \\
+                                             analysis API
+                                             \end{tabular}
+}}
+\ncline{->}{n1}{n2}
+\ncline{->}{n4}{n2}
+\ncline{->}{n5}{n2}
+\ncline{->}{n6}{n2} 
+
+\onslide<3->
+ \putnode{n3}{n2}{40}{0}{%
+      \textbf{Result}}
+\ncline{->}{n2}{n3}
+      
+ 
+\end{pspicture}
+
+}
+
+
 
 
 % \frame{
@@ -2257,107 +2364,6 @@ When program undergoes changes:
 % 
 % 
 % 
-% \part{Overview of PRISM}
-% \frame{\partpage}
-% 
-% \frame{
-% \frametitle{PRISM}
-% \begin{itemize}
-% \item<1-> \alt<1> { PRISM is a program analyzer generator developed by TATA Research Development and Design Center (TRDDC)}
-% 
-% \end{itemize}
-% }
-% 
-% 
-% \frame{
-% \frametitle{Architecture of PRISM}
-% \onslide<1->
-% \psset{unit=1mm}
-% \psset{linewidth=.3mm}
-% \psset{framearc=.1}
-% \begin{pspicture}(25,-25)(38,64)
-% %\psframe(0,0)(38,64)
-% \putnode{n0}{origin}{50}{50}{Program} 
-% 
-% \onslide<2->
-% \putnode{n1}{n0}{40}{0}{\psframebox{IR generator} }
-% \ncline{->}{n0}{n1}
-% 
-% \onslide<3->
-% \putnode{n2}{n0}{70}{0}{IR} 
-% \ncline{->}{n1}{n2}
-% 
-% \onslide<4->
-% \putnode{n3}{n0}{70}{-25}{\psframebox{Generated analyzer} }
-% \ncline{->}{n2}{n3}
-% 
-% \onslide<5->
-% \putnode{n7}{n3}{-80}{-10}{.java files}
-% \putnode{n6}{n3}{-80}{10}{.klg files}
-% 
-% \onslide<6->
-% \putnode{n5}{n3}{-60}{0}{\psframebox{Kulang Compiler} }
-% 
-% \onslide<7->
-% \nccurve[ncurv=0.5,angleA=0,angleB=135]{->}{n6}{n5}
-% 
-% \onslide<8->
-% \ncline{->}{n5}{n3}\aput(0.4){Generated}
-% \nccurve[ncurv=0.5,angleA=0,angleB=225]{->}{n7}{n3}\aput(0.5){Copied}
-% 
-% \onslide<9->
-% \putnode{n4}{n0}{70}{-50}{Output reports}
-% \ncline{->}{n3}{n4}
-% \end{pspicture}
-% }
-% 
-% \frame{
-% \frametitle{Architecture of analyser generator}
-% \onslide<1->
-% \psset{unit=1mm}
-% \psset{linewidth=.3mm}
-% \psset{framearc=.1}
-% \begin{pspicture}(-20,10)(105,80)
-% % \psframe(-20,10)(105,80)
-% 
-% \putnode{n2}{origin}{45}{30}{%
-%      \psframebox[linewidth=.3,framesep=5.7]{Solver}}
-% 
-%     
-% \onslide<2->    
-% \putnode{n1}{n2}{-40}{0}{%
-%      \textbf{Generated IR}}
-%  \putnode{n4}{n2}{-40}{30}{%
-%       \psframebox[linewidth=.3,framesep=1.7]{\begin{tabular}{c}
-%                                              Generated \\
-%                                              files by \\
-%                                              kulang compiler
-%                                              \end{tabular}
-% }}
-% 
-% \putnode{n5}{n2}{0}{30}{%
-%       \psframebox[linewidth=.3,framesep=1.7]{Utility functions}}
-%  
-% \putnode{n6}{n2}{40}{30}{%
-%       \psframebox[linewidth=.3,framesep=1.7]{\begin{tabular}{c}
-%                                              Data flow \\
-%                                              analysis API
-%                                              \end{tabular}
-% }}
-% \ncline{->}{n1}{n2}
-% \ncline{->}{n4}{n2}
-% \ncline{->}{n5}{n2}
-% \ncline{->}{n6}{n2} 
-% 
-% \onslide<3->
-%  \putnode{n3}{n2}{40}{0}{%
-%       \textbf{Result}}
-% \ncline{->}{n2}{n3}
-%       
-%  
-% \end{pspicture}
-% 
-% }
 % 
 % \begin{frame}[fragile]
 %   \frametitle{Kulang specifications}

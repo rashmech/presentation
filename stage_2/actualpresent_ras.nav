@@ -99,14 +99,34 @@
 \headcommand {\beamer@framepages {112}{112}}
 \headcommand {\slideentry {0}{0}{42}{113/118}{}{4}}
 \headcommand {\beamer@framepages {113}{118}}
-\headcommand {\partentry {Thank You !}{5}}
+\headcommand {\partentry {Overview of PRISM}{5}}
 \headcommand {\beamer@partpages {101}{118}}
 \headcommand {\beamer@sectionpages {101}{118}}
 \headcommand {\beamer@subsectionpages {101}{118}}
 \headcommand {\slideentry {0}{0}{43}{119/119}{}{5}}
 \headcommand {\beamer@framepages {119}{119}}
-\headcommand {\beamer@partpages {119}{119}}
-\headcommand {\beamer@subsectionpages {119}{119}}
-\headcommand {\beamer@sectionpages {119}{119}}
-\headcommand {\beamer@documentpages {119}}
-\headcommand {\def \inserttotalframenumber {43}}
+\headcommand {\slideentry {0}{0}{44}{120/120}{}{5}}
+\headcommand {\beamer@framepages {120}{120}}
+\headcommand {\slideentry {0}{0}{45}{121/121}{}{5}}
+\headcommand {\beamer@framepages {121}{121}}
+\headcommand {\slideentry {0}{0}{46}{122/124}{}{5}}
+\headcommand {\beamer@framepages {122}{124}}
+\headcommand {\partentry {Incremental Solver}{6}}
+\headcommand {\beamer@partpages {119}{124}}
+\headcommand {\beamer@sectionpages {119}{124}}
+\headcommand {\beamer@subsectionpages {119}{124}}
+\headcommand {\slideentry {0}{0}{47}{125/125}{}{6}}
+\headcommand {\beamer@framepages {125}{125}}
+\headcommand {\slideentry {0}{0}{48}{126/126}{}{6}}
+\headcommand {\beamer@framepages {126}{126}}
+\headcommand {\partentry {Thank You !}{7}}
+\headcommand {\beamer@partpages {125}{126}}
+\headcommand {\beamer@sectionpages {125}{126}}
+\headcommand {\beamer@subsectionpages {125}{126}}
+\headcommand {\slideentry {0}{0}{49}{127/127}{}{7}}
+\headcommand {\beamer@framepages {127}{127}}
+\headcommand {\beamer@partpages {127}{127}}
+\headcommand {\beamer@subsectionpages {127}{127}}
+\headcommand {\beamer@sectionpages {127}{127}}
+\headcommand {\beamer@documentpages {127}}
+\headcommand {\def \inserttotalframenumber {49}}

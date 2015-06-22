@@ -1959,8 +1959,171 @@ When program undergoes changes:
 
 }
 
+\part{Overview of PRISM}
+\frame{\partpage}
+
+\frame{
+\frametitle{PRISM}
+\begin{itemize}
+\item<1-> \alt<1> { PRISM is a program analyzer generator developed by TATA Research Development and Design Center (TRDDC)}
+
+\end{itemize}
+}
 
 
+\frame{
+\frametitle{Old Architecture of PRISM}
+\begin{pspicture}(-20,15)(115,90)
+% \bsegin{psframe}(-20,15)(115,90)
+\putnode{n1}{origin}{60}{80}{%
+	  {\textbf{Program}}
+     }
+
+\putnode{n2}{n1}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=1.7]{IR Generator}}
+
+\putnode{n3}{n2}{0}{-10}{%
+     {\textbf{Generated IR}}}
+
+\putnode{n4}{n3}{0}{-15}{%
+      \psframebox[linewidth=.3,framesep=1.7]{Solver}}
+
+\putnode{n5}{n4}{30}{0}{{\textbf{Results}}}
+
+\putnode{n6}{n4}{-40}{0}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Kulang Compiler}}
+
+% \putnode{n8}{n6}{0}{15}{%
+%      {Copied}}
+% \rput(55,33){\rnode{a}{Generated}}
+\putnode{n7}{n6}{-30}{0}{%
+      {\textbf{.klg files}}}
+
+\putnode{n8}{n6}{5}{15}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Other Utility functions}}
+\putnode{n9}{n7}{57}{-7}{%
+     {Generated Java files}}
+
+\ncline{->}{n1}{n2}
+\ncline{->}{n2}{n3}
+\ncline{->}{n3}{n4}
+\ncline{->}{n4}{n5}
+\ncline{->}{n6}{n4}
+\ncline{->}{n7}{n6}
+% \nccurve[angleA=0, angleB=100, ncurv=0.5]{->}{n7}{n6}
+\ncline{->}{n8}{n4}
+% \end{psframe}
+
+\end{pspicture}
+}
+
+\frame{
+\frametitle{Architecture of Analyzer Generator}
+\onslide<1->
+\psset{unit=1mm}
+\psset{linewidth=.3mm}
+\psset{framearc=.1}
+\begin{pspicture}(-20,10)(105,80)
+% \psframe(-20,10)(105,80)
+
+\putnode{n2}{origin}{45}{30}{%
+     \psframebox[linewidth=.3,framesep=5.7]{Solver}}
+
+    
+\onslide<2->    
+\putnode{n1}{n2}{-40}{0}{%
+     \textbf{Generated IR}}
+ \putnode{n4}{n2}{-40}{30}{%
+      \psframebox[linewidth=.3,framesep=1.7]{\begin{tabular}{c}
+                                             Generated \\
+                                             files by \\
+                                             kulang compiler
+                                             \end{tabular}
+}}
+
+\putnode{n5}{n2}{0}{30}{%
+      \psframebox[linewidth=.3,framesep=1.7]{Utility functions}}
+ 
+\putnode{n6}{n2}{40}{30}{%
+      \psframebox[linewidth=.3,framesep=1.7]{\begin{tabular}{c}
+                                             Data flow \\
+                                             analysis API
+                                             \end{tabular}
+}}
+\ncline{->}{n1}{n2}
+\ncline{->}{n4}{n2}
+\ncline{->}{n5}{n2}
+\ncline{->}{n6}{n2} 
+
+\onslide<3->
+ \putnode{n3}{n2}{40}{0}{%
+      \textbf{Result}}
+\ncline{->}{n2}{n3}
+      
+ 
+\end{pspicture}
+}
+
+\part{Incremental Solver}
+\frame{\partpage}
+
+\frame{ 
+\frametitle{Architecture of Incremental PRISM}
+\begin{pspicture}(-20,-20)(115,90)
+
+\begin{psframe}(-20,-20)(115,90)
+\putnode{n1}{origin}{0}{80}{%
+	  {\textbf{Old IR}}
+     }
+  
+\putnode{n2}{n1}{40}{-5}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Preprocessor}}
+     
+\putnode{n3}{n1}{0}{-10}{%
+	  {\textbf{New IR}}
+     }
+\putnode{n4}{n2}{50}{0}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Re-initializer}}
+     
+\putnode{n5}{n4}{0}{-30}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Solver}}
+
+\putnode{n6}{n5}{0}{-30}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Merger}}
+\putnode{n13}{n6}{-30}{0}{%
+     {\textbf{Old Solution}}}
+     
+\putnode{n7}{n6}{0}{-20}{%
+	  {\textbf{Updated Results}}
+     }
+
+\putnode{n8}{n5}{-40}{15}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Query specification}}
+\putnode{n11}{n8}{18}{0}
+
+\putnode{n9}{n5}{-40}{0}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Utility functions}}
+
+\putnode{n10}{n5}{-45}{-15}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Data flow Analysis API}}
+\putnode{n12}{n10}{22}{0}
+
+
+\ncline{->}{n1}{n2}
+\ncline{->}{n3}{n2}
+\ncline{->}{n2}{n4}
+\ncline{->}{n4}{n5}
+\ncline{->}{n5}{n6}
+\ncline{->}{n6}{n7}
+\ncline{->}{n11}{n5}
+\ncline{->}{n9}{n5}
+\ncline{->}{n12}{n5}
+\ncline{->}{n13}{n6}
+\end{psframe}
+
+\end{pspicture}
+
+}
 
 
 % \frame{
