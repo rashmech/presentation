@@ -34,6 +34,7 @@
 \usepackage[normalem]{ulem}
 \usepackage{hyperref}
 \usepackage{xspace}
+\usepackage{tikz}
 
 \newcommand{\mustl}{\mbox{\sf MustL}}
 \newcommand{\mustr}{\mbox{\sf MustR}}
@@ -548,19 +549,19 @@ Indian Institute of Technology, Bombay}
 \frame{
 \frametitle{Outline of the talk}
 \begin{itemize}
-  \item Incremental Data Flow analysis
-  \begin{itemize}
-  \item Bit-vector frameworks
-  \item General frameworks
-  \item Method to reduce the size of affected region
-  \end{itemize}
+  \item Incremental Data Flow Analysis
+  \item Incremental Analysis for Bit-vector Frameworks
+  \item Incremental Analysis for General Frameworks
+  \item Method to Reduce the Size of Affected Region
   \item Overview of PRISM 
-  \item Incremental driver
+  \item Incremental Driver
   \begin{itemize}
+    \item Architecture
     \item Testing
    \end{itemize}
-  \item Limitations of old Solver
-  \item Future work
+  \item Limitations
+  \item Assumptions
+  \item Future Work
 \end{itemize}
 }
 
@@ -758,12 +759,25 @@ When program undergoes changes:
 }
 
 
-\part{Incremental Analysis in Bit-vector Framework}
+\part{Incremental Analysis for Bit-vector Framework}
 \frame{\partpage}
 
+\frame{ 
+\frametitle{Possible changes}
+\begin{itemize}
+ \item Due to program change, following changes are possible:
+ \begin{itemize}
+  \item Change in flow functions
+  \item Change in control flow graph
+  \item Change in lattice
+ \end{itemize}
+
+\end{itemize}
+
+}
 
 \frame{
-\frametitle{Flow functions in bit-vector frameworks}
+\frametitle{Flow Functions in Bit-vector Frameworks}
 \begin{itemize}
  \item Possible flow functions:
 	\begin{itemize}
@@ -1518,7 +1532,7 @@ When program undergoes changes:
 
 
 \frame{
- \frametitle{Component lattice for Constant Propagation}
+ \frametitle{Component Lattice for Constant Propagation}
  \begin{pspicture}(10,0)(200,50)
 % \psframe(10,-10)(200,50)
 \rput(70,40){\rnode{t1}{$\top$}}
@@ -1562,7 +1576,7 @@ When program undergoes changes:
 }
 
 \frame{ 
-\frametitle{Flow functions}
+\frametitle{Flow Functions}
 \begin{itemize}
  \item Possible flow functions
       \begin{itemize}
@@ -1575,7 +1589,7 @@ When program undergoes changes:
 }
 
 \frame{
-\frametitle{Constant functions}
+\frametitle{Constant Functions}
 \begin{pspicture}(0,0)(0,50)
 \onslide<1->
 \putnode{n12}{origin}{60}{40}{%
@@ -1610,7 +1624,7 @@ When program undergoes changes:
 
 
 \frame{
-\frametitle{Side level functions}
+\frametitle{Side Level Functions}
 \begin{pspicture}(0,0)(0,50)
 \onslide<1->
 \putnode{n12}{origin}{60}{40}{%
@@ -2134,541 +2148,601 @@ When program undergoes changes:
  \item Declaration of variable haven't change.
  \item No structural change in the graph.
  \item A name can refer to a single variable in a program at any given program point.
- \item past information is stored flow sensitively.
+ \item Past information is stored flow sensitively.
+\end{itemize}
+
+}
+
+\frame{
+\frametitle{Limitations}
+\begin{itemize}
+ \item Following are current limitations:
+\begin{itemize}
+ \item Code for affected region has to be written manually.
+ \item Result is stored in a non-standard format by the Solver. 
+ \item Non inclusion of global and local declarations.
+\end{itemize}
+\end{itemize}
+
+}
+
+
+
+\part{Testing}
+\frame{\partpage}
+
+\frame{ 
+\frametitle{Test Case 1 : $a$ is a global variable}
+\begin{pspicture}(0,0)(130,80)
+%  \psframe(0,0)(130,80)
+\onslide<1->
+\putnode{n1}{origin}{25}{67}{%
+      \psframebox[linewidth=.3,framesep=1.0, framearc=.3]{\hspace{5mm}}}
+%  \rput(10,67){\rnode{a}{\tiny{n1}}}  
+\putnode{n}{n1}{30}{10}{{\red{$n7$ is a changed node}}}
+\putnode{a}{n1}{0}{3}{\tiny{main}}
+\putnode{a1}{n1}{-5}{0}{\tiny{n1}}
+\putnode{n2}{n1}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{if( )}}}
+\putnode{a2}{n2}{-5}{0}{\tiny{n2}}
+
+\putnode{n3}{n2}{10}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{while( )}}}
+\putnode{a3}{n3}{-6}{0}{\tiny{n3}}
+
+\putnode{n4}{n3}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{z = 1}}}
+\putnode{a4}{n4}{-5}{0}{\tiny{n4}}
+
+\putnode{n5}{n4}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{if( )}}}
+\putnode{a5}{n5}{-5}{0}{\tiny{n5}}
+
+\putnode{n6}{n5}{-9}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{if( )}}}
+\putnode{a6}{n6}{-4}{0}{\tiny{n6}}
+ 
+\putnode{n7}{n5}{15}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{a =}}}
+
+ 
+\putnode{n9}{n7}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=1.0, framearc=.3]{\hspace{5mm}}}
+
+
+\putnode{n11}{n9}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{func( )}}}
+
+ 
+\putnode{n8}{n6}{9}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{z =}}}
+\putnode{a8}{n8}{-5}{0}{\tiny{n8}}
+ 
+\putnode{n10}{n8}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{func1( )}}}
+\putnode{a10}{n10}{-7}{0}{\tiny{n10}}
+
+\putnode{n12}{n10}{5}{-7}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{a =}}}
+\putnode{a12}{n12}{-5}{0}{\tiny{n12}}
+
+\putnode{n13}{n6}{-7}{-10}{%
+ \psframebox[linewidth=.3,framesep=1, framearc=.3]{\hspace{5mm}}}
+\putnode{a13}{n13}{-6}{0}{\tiny{n13}}
+
+\putnode{n14}{n13}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=1, framearc=.3]{\hspace{5mm}}}
+\putnode{a14}{n14}{-6}{0}{\tiny{n14}}
+
+\ncline{->}{n1}{n2}
+\ncline{->}{n2}{n3}
+\ncline{->}{n3}{n4}
+\ncline{->}{n4}{n5}
+\ncline{->}{n5}{n6}
+\ncline{->}{n5}{n7}
+\ncline{->}{n7}{n9}
+\ncline{->}{n9}{n11}
+\ncline{->}{n11}{n12}
+\ncline{->}{n6}{n8}
+\ncline{->}{n8}{n10}
+\ncline{->}{n10}{n12}
+\ncline{->}{n6}{n13}
+\ncline{->}{n13}{n14}
+\ncline{->}{n2}{n13}
+\ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=-15,
+		linearc=0.5,offsetA=2, offsetB=2]{->}{n12}{n3}
+
+
+
+
+
+\putnode{n15}{origin}{85}{67}{%
+     \psframebox[linewidth=.3,framesep=1]{ \hspace{5mm}}}
+     \putnode{m15}{n15}{0}{3}{\tiny{func( )}}
+
+
+\putnode{n160}{n15}{0}{-5}{%
+     \psframebox[linewidth=.3,framesep=1]{\tiny{$a=$}}}
+
+
+\putnode{n17}{n160}{0}{-5}{%
+     \psframebox[linewidth=.3,framesep=1]{\hspace{5mm}}}
+\putnode{a17}{n17}{-6}{0}{\tiny{n17}}
+ 
+\putnode{n18}{n17}{-9}{-5}{%
+     \psframebox[linewidth=.3,framesep=1]{\hspace{5mm}}}
+\putnode{a18}{n18}{-6}{0}{\tiny{n18}}
+
+\putnode{n19}{n17}{9}{-5}{%
+     \psframebox[linewidth=.3,framesep=1]{\hspace{5mm}}}
+\putnode{a19}{n19}{-6}{0}{\tiny{n19}}
+
+\putnode{n20}{n17}{0}{-10}{%
+     \psframebox[linewidth=.3,framesep=1]{\hspace{5mm}}}
+\putnode{a20}{n20}{-6}{0}{\tiny{n20}}
+
+\putnode{n00}{n20}{0}{-5}{%
+     \psframebox[linewidth=.3,framesep=1	]{\hspace{5mm}}}
+% \putnode{a1}{n1}{-5}{0}{\tiny{n1}}
+
+% \rput(20,37){\rnode{b}{(b)}}
+\ncline{->}{n15}{n160}
+\ncline{->}{n160}{n17}
+\ncline{->}{n17}{n18}
+\ncline{->}{n17}{n19}
+\ncline{->}{n19}{n20}
+\ncline{->}{n18}{n20}
+\ncline{->}{n20}{n00}
+\ncloop[armA=1.5,armB=1.5,angleA=-90,angleB=90,loopsize=-14,
+		linearc=0.5,offsetA=1, offsetB=1]{->}{n20}{n17}
+		
+% \rput(120,125){\rnode{f2}{func1()}}
+\putnode{n21}{origin}{85}{30}{%
+     \psframebox[linewidth=.3,framesep=1.0]{ \hspace{5mm}}}
+\putnode{m21}{n21}{0}{3}{\tiny{func1(m)}}
+\putnode{a21}{n21}{-6}{0}{\tiny{n21}}
+
+\putnode{n22}{n21}{0}{-5}{%
+     \psframebox[linewidth=.3,framesep=1.0]{\hspace{5mm}}}
+\putnode{a22}{n22}{-6}{0}{\tiny{n22}}
+
+\putnode{n23}{n22}{-7}{-5}{%
+     \psframebox[linewidth=.3,framesep=1.0]{\hspace{5mm}}}
+\putnode{a23}{n23}{-6}{0}{\tiny{n23}}
+
+\putnode{n24}{n22}{7}{-5}{%
+     \psframebox[linewidth=.3,framesep=1.0]{\hspace{5mm}}}
+\putnode{a24}{n24}{-6}{0}{\tiny{n24}}
+
+\putnode{n25}{n22}{0}{-10}{%
+     \psframebox[linewidth=.3,framesep=0.3]{\tiny{$m=$}}}
+\putnode{a25}{n25}{-6}{0}{\tiny{n25}}
+
+\putnode{n26}{n25}{0}{-5}{%
+     \psframebox[linewidth=.3,framesep=1.0]{\hspace{5mm}}}
+\putnode{a26}{n26}{-6}{0}{\tiny{n26}}
+
+% \rput(120,45){\rnode{b}{(c)}}
+\ncline{->}{n21}{n22}
+\ncline{->}{n22}{n23}
+\ncline{->}{n23}{n25}
+\ncline{->}{n22}{n24}
+\ncline{->}{n24}{n25}
+\ncline{->}{n25}{n26}
+
+\onslide<1-2>
+\putnode{a7}{n7}{-5}{0}{\tiny{n7}}
+\putnode{a9}{n9}{-5}{0}{\tiny{n9}}
+\putnode{a11}{n11}{-7}{0}{\tiny{n11}}		
+\putnode{a15}{n15}{-6}{0}{\tiny{n15}}
+\putnode{a16}{n160}{-5}{0}{\tiny{n16}}
+
+\onslide<2->
+\putnode{x1}{n7}{0}{0}{\red{\tiny{$a=$}}}
+
+\onslide<3->
+\putnode{a7}{n7}{-5}{0}{\red{\tiny{n7}}}
+\putnode{a9}{n9}{-5}{0}{\red{\tiny{n9}}}
+\putnode{a11}{n11}{-7}{0}{\red{\tiny{n11}}}		
+\putnode{a15}{n15}{-6}{0}{\red{\tiny{n15}}}
+\putnode{a16}{n160}{-5}{0}{\red{\tiny{n16}}}
+
+\end{pspicture}
+}
+
+
+\frame{ 
+\frametitle{Test Case 2 : $a$ is a local variable}
+\begin{pspicture}(0,0)(130,80)
+%  \psframe(0,0)(130,80)
+\onslide<1->
+\putnode{n1}{origin}{25}{67}{%
+      \psframebox[linewidth=.3,framesep=1.0, framearc=.3]{\hspace{5mm}}}
+%  \rput(10,67){\rnode{a}{\tiny{n1}}}  
+\putnode{n}{n1}{30}{10}{{\red{$n7$ is a changed node}}}
+\putnode{a}{n1}{0}{3}{\tiny{main}}
+\putnode{a1}{n1}{-5}{0}{\tiny{n1}}
+\putnode{n2}{n1}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{if( )}}}
+\putnode{a2}{n2}{-5}{0}{\tiny{n2}}
+
+\putnode{n3}{n2}{10}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{while( )}}}
+\putnode{a3}{n3}{-6}{0}{\tiny{n3}}
+
+\putnode{n4}{n3}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{z = 1}}}
+\putnode{a4}{n4}{-5}{0}{\tiny{n4}}
+
+\putnode{n5}{n4}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{if( )}}}
+\putnode{a5}{n5}{-5}{0}{\tiny{n5}}
+
+\putnode{n6}{n5}{-9}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{if( )}}}
+\putnode{a6}{n6}{-4}{0}{\tiny{n6}}
+ 
+\putnode{n7}{n5}{15}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{a =}}}
+% \putnode{a7}{n7}{-5}{0}{\tiny{n7}}
+ 
+\putnode{n9}{n7}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=1.0, framearc=.3]{\hspace{5mm}}}
+% \putnode{a9}{n9}{-5}{0}{\tiny{n9}}
+
+\putnode{n11}{n9}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{func( )}}}
+% \putnode{a11}{n11}{-7}{0}{\tiny{n11}}
+ 
+\putnode{n8}{n6}{9}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{z =}}}
+\putnode{a8}{n8}{-5}{0}{\tiny{n8}}
+ 
+\putnode{n10}{n8}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{func1( )}}}
+\putnode{a10}{n10}{-7}{0}{\tiny{n10}}
+
+\putnode{n12}{n10}{5}{-7}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{a =}}}
+% 
+
+\putnode{n13}{n6}{-7}{-10}{%
+ \psframebox[linewidth=.3,framesep=1, framearc=.3]{\hspace{5mm}}}
+\putnode{a13}{n13}{-6}{0}{\tiny{n13}}
+
+\putnode{n14}{n13}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=1, framearc=.3]{\hspace{5mm}}}
+\putnode{a14}{n14}{-6}{0}{\tiny{n14}}
+
+\ncline{->}{n1}{n2}
+\ncline{->}{n2}{n3}
+\ncline{->}{n3}{n4}
+\ncline{->}{n4}{n5}
+\ncline{->}{n5}{n6}
+\ncline{->}{n5}{n7}
+\ncline{->}{n7}{n9}
+\ncline{->}{n9}{n11}
+\ncline{->}{n11}{n12}
+\ncline{->}{n6}{n8}
+\ncline{->}{n8}{n10}
+\ncline{->}{n10}{n12}
+\ncline{->}{n6}{n13}
+\ncline{->}{n13}{n14}
+\ncline{->}{n2}{n13}
+\ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=-15,
+		linearc=0.5,offsetA=2, offsetB=2]{->}{n12}{n3}
+
+
+
+
+
+\putnode{n15}{origin}{85}{67}{%
+     \psframebox[linewidth=.3,framesep=1]{ \hspace{5mm}}}
+     \putnode{m15}{n15}{0}{3}{\tiny{func( )}}
+\putnode{a15}{n15}{-6}{0}{\tiny{n15}}
+
+\putnode{n160}{n15}{0}{-5}{%
+     \psframebox[linewidth=.3,framesep=1]{\tiny{$a=$}}}
+\putnode{a16}{n160}{-5}{0}{\tiny{n16}}
+
+\putnode{n17}{n160}{0}{-5}{%
+     \psframebox[linewidth=.3,framesep=1]{\hspace{5mm}}}
+\putnode{a17}{n17}{-6}{0}{\tiny{n17}}
+ 
+\putnode{n18}{n17}{-9}{-5}{%
+     \psframebox[linewidth=.3,framesep=1]{\hspace{5mm}}}
+\putnode{a18}{n18}{-6}{0}{\tiny{n18}}
+
+\putnode{n19}{n17}{9}{-5}{%
+     \psframebox[linewidth=.3,framesep=1]{\hspace{5mm}}}
+\putnode{a19}{n19}{-6}{0}{\tiny{n19}}
+
+\putnode{n20}{n17}{0}{-10}{%
+     \psframebox[linewidth=.3,framesep=1]{\hspace{5mm}}}
+\putnode{a20}{n20}{-6}{0}{\tiny{n20}}
+
+\putnode{n00}{n20}{0}{-5}{%
+     \psframebox[linewidth=.3,framesep=1	]{\hspace{5mm}}}
+% \putnode{a1}{n1}{-5}{0}{\tiny{n1}}
+
+% \rput(20,37){\rnode{b}{(b)}}
+\ncline{->}{n15}{n160}
+\ncline{->}{n160}{n17}
+\ncline{->}{n17}{n18}
+\ncline{->}{n17}{n19}
+\ncline{->}{n19}{n20}
+\ncline{->}{n18}{n20}
+\ncline{->}{n20}{n00}
+\ncloop[armA=1.5,armB=1.5,angleA=-90,angleB=90,loopsize=-14,
+		linearc=0.5,offsetA=1, offsetB=1]{->}{n20}{n17}
+		
+% \rput(120,125){\rnode{f2}{func1()}}
+\putnode{n21}{origin}{85}{30}{%
+     \psframebox[linewidth=.3,framesep=1.0]{ \hspace{5mm}}}
+\putnode{m21}{n21}{0}{3}{\tiny{func1(m)}}
+\putnode{a21}{n21}{-6}{0}{\tiny{n21}}
+
+\putnode{n22}{n21}{0}{-5}{%
+     \psframebox[linewidth=.3,framesep=1.0]{\hspace{5mm}}}
+\putnode{a22}{n22}{-6}{0}{\tiny{n22}}
+
+\putnode{n23}{n22}{-7}{-5}{%
+     \psframebox[linewidth=.3,framesep=1.0]{\hspace{5mm}}}
+\putnode{a23}{n23}{-6}{0}{\tiny{n23}}
+
+\putnode{n24}{n22}{7}{-5}{%
+     \psframebox[linewidth=.3,framesep=1.0]{\hspace{5mm}}}
+\putnode{a24}{n24}{-6}{0}{\tiny{n24}}
+
+\putnode{n25}{n22}{0}{-10}{%
+     \psframebox[linewidth=.3,framesep=0.3]{\tiny{$m=$}}}
+\putnode{a25}{n25}{-6}{0}{\tiny{n25}}
+
+\putnode{n26}{n25}{0}{-5}{%
+     \psframebox[linewidth=.3,framesep=1.0]{\hspace{5mm}}}
+\putnode{a26}{n26}{-6}{0}{\tiny{n26}}
+
+% \rput(120,45){\rnode{b}{(c)}}
+\ncline{->}{n21}{n22}
+\ncline{->}{n22}{n23}
+\ncline{->}{n23}{n25}
+\ncline{->}{n22}{n24}
+\ncline{->}{n24}{n25}
+\ncline{->}{n25}{n26}
+
+\onslide<1-2>
+\putnode{a7}{n7}{-5}{0}{\tiny{n7}}
+\putnode{a9}{n9}{-5}{0}{\tiny{n9}}
+\putnode{a11}{n11}{-7}{0}{\tiny{n11}}		
+\putnode{a12}{n12}{-5}{0}{\tiny{n12}}
+
+\onslide<2->
+\putnode{x1}{n7}{0}{0}{\red{\tiny{$a=$}}}
+
+\onslide<3->
+\putnode{a7}{n7}{-5}{0}{\red{\tiny{n7}}}
+\putnode{a9}{n9}{-5}{0}{\red{\tiny{n9}}}
+\putnode{a11}{n11}{-7}{0}{\red{\tiny{n11}}}		
+\putnode{a12}{n12}{-5}{0}{\red{\tiny{n12}}}
+
+
+\end{pspicture}
+
+}
+
+
+\frame{ 
+\frametitle{Test Case 3 : passed as a parameter}
+\begin{pspicture}(0,0)(130,80)
+%  \psframe(0,0)(130,80)
+\onslide<1->
+\putnode{n1}{origin}{25}{67}{%
+      \psframebox[linewidth=.3,framesep=1.0, framearc=.3]{\hspace{5mm}}}
+%  \rput(10,67){\rnode{a}{\tiny{n1}}}  
+\putnode{n}{n1}{30}{10}{{\red{$n8$ is a changed node}}}
+\putnode{a}{n1}{0}{3}{\tiny{main}}
+\putnode{a1}{n1}{-5}{0}{\tiny{n1}}
+\putnode{n2}{n1}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{if( )}}}
+\putnode{a2}{n2}{-5}{0}{\tiny{n2}}
+
+\putnode{n3}{n2}{10}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{while( )}}}
+
+
+\putnode{n4}{n3}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{z = 1}}}
+
+
+\putnode{n5}{n4}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{if( )}}}
+\putnode{a5}{n5}{-5}{0}{\tiny{n5}}
+
+\putnode{n6}{n5}{-9}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{if( )}}}
+\putnode{a6}{n6}{-4}{0}{\tiny{n6}}
+ 
+\putnode{n7}{n5}{15}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{a =}}}
+% \putnode{a7}{n7}{-5}{0}{\tiny{n7}}
+ 
+\putnode{n9}{n7}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=1.0, framearc=.3]{\hspace{5mm}}}
+% \putnode{a9}{n9}{-5}{0}{\tiny{n9}}
+
+\putnode{n11}{n9}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{func( )}}}
+% \putnode{a11}{n11}{-7}{0}{\tiny{n11}}
+ 
+\putnode{n8}{n6}{9}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{z =}}}
+
+ 
+\putnode{n10}{n8}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{func1( )}}}
+
+
+\putnode{n12}{n10}{5}{-7}{%
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{a =}}}
+% 
+
+\putnode{n13}{n6}{-7}{-10}{%
+ \psframebox[linewidth=.3,framesep=1, framearc=.3]{\hspace{5mm}}}
+\putnode{a13}{n13}{-6}{0}{\tiny{n13}}
+
+\putnode{n14}{n13}{0}{-5}{%
+ \psframebox[linewidth=.3,framesep=1, framearc=.3]{\hspace{5mm}}}
+\putnode{a14}{n14}{-6}{0}{\tiny{n14}}
+
+\ncline{->}{n1}{n2}
+\ncline{->}{n2}{n3}
+\ncline{->}{n3}{n4}
+\ncline{->}{n4}{n5}
+\ncline{->}{n5}{n6}
+\ncline{->}{n5}{n7}
+\ncline{->}{n7}{n9}
+\ncline{->}{n9}{n11}
+\ncline{->}{n11}{n12}
+\ncline{->}{n6}{n8}
+\ncline{->}{n8}{n10}
+\ncline{->}{n10}{n12}
+\ncline{->}{n6}{n13}
+\ncline{->}{n13}{n14}
+\ncline{->}{n2}{n13}
+\ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=-15,
+		linearc=0.5,offsetA=2, offsetB=2]{->}{n12}{n3}
+
+\putnode{n15}{origin}{85}{67}{%
+     \psframebox[linewidth=.3,framesep=1]{ \hspace{5mm}}}
+     \putnode{m15}{n15}{0}{3}{\tiny{func( )}}
+\putnode{a15}{n15}{-6}{0}{\tiny{n15}}
+
+\putnode{n160}{n15}{0}{-5}{%
+     \psframebox[linewidth=.3,framesep=1]{\tiny{$a=$}}}
+\putnode{a16}{n160}{-5}{0}{\tiny{n16}}
+
+\putnode{n17}{n160}{0}{-5}{%
+     \psframebox[linewidth=.3,framesep=1]{\hspace{5mm}}}
+\putnode{a17}{n17}{-6}{0}{\tiny{n17}}
+ 
+\putnode{n18}{n17}{-9}{-5}{%
+     \psframebox[linewidth=.3,framesep=1]{\hspace{5mm}}}
+\putnode{a18}{n18}{-6}{0}{\tiny{n18}}
+
+\putnode{n19}{n17}{9}{-5}{%
+     \psframebox[linewidth=.3,framesep=1]{\hspace{5mm}}}
+\putnode{a19}{n19}{-6}{0}{\tiny{n19}}
+
+\putnode{n20}{n17}{0}{-10}{%
+     \psframebox[linewidth=.3,framesep=1]{\hspace{5mm}}}
+\putnode{a20}{n20}{-6}{0}{\tiny{n20}}
+
+\putnode{n00}{n20}{0}{-5}{%
+     \psframebox[linewidth=.3,framesep=1	]{\hspace{5mm}}}
+% \putnode{a1}{n1}{-5}{0}{\tiny{n1}}
+
+% \rput(20,37){\rnode{b}{(b)}}
+\ncline{->}{n15}{n160}
+\ncline{->}{n160}{n17}
+\ncline{->}{n17}{n18}
+\ncline{->}{n17}{n19}
+\ncline{->}{n19}{n20}
+\ncline{->}{n18}{n20}
+\ncline{->}{n20}{n00}
+\ncloop[armA=1.5,armB=1.5,angleA=-90,angleB=90,loopsize=-14,
+		linearc=0.5,offsetA=1, offsetB=1]{->}{n20}{n17}
+		
+% \rput(120,125){\rnode{f2}{func1()}}
+\putnode{n21}{origin}{85}{30}{%
+     \psframebox[linewidth=.3,framesep=1.0]{ \hspace{5mm}}}
+\putnode{m21}{n21}{0}{3}{\tiny{func1(m)}}
+
+
+\putnode{n22}{n21}{0}{-5}{%
+     \psframebox[linewidth=.3,framesep=1.0]{\hspace{5mm}}}
+
+
+\putnode{n23}{n22}{-7}{-5}{%
+     \psframebox[linewidth=.3,framesep=1.0]{\hspace{5mm}}}
+
+
+\putnode{n24}{n22}{7}{-5}{%
+     \psframebox[linewidth=.3,framesep=1.0]{\hspace{5mm}}}
+
+
+\putnode{n25}{n22}{0}{-10}{%
+     \psframebox[linewidth=.3,framesep=0.3]{\tiny{$m=$}}}
+
+
+\putnode{n26}{n25}{0}{-5}{%
+     \psframebox[linewidth=.3,framesep=1.0]{\hspace{5mm}}}
+\putnode{a26}{n26}{-6}{0}{\tiny{n26}}
+
+
+\putnode{a7}{n7}{-5}{0}{\tiny{n7}}
+\putnode{a9}{n9}{-5}{0}{\tiny{n9}}
+\putnode{a11}{n11}{-7}{0}{\tiny{n11}}		
+
+
+% \rput(120,45){\rnode{b}{(c)}}
+\ncline{->}{n21}{n22}
+\ncline{->}{n22}{n23}
+\ncline{->}{n23}{n25}
+\ncline{->}{n22}{n24}
+\ncline{->}{n24}{n25}
+\ncline{->}{n25}{n26}
+
+\onslide<1-2>
+\putnode{a8}{n8}{-5}{0}{\tiny{n8}}
+\putnode{a10}{n10}{-7}{0}{\tiny{n10}}
+\putnode{a21}{n21}{-6}{0}{\tiny{n21}}
+\putnode{a22}{n22}{-6}{0}{\tiny{n22}}
+\putnode{a23}{n23}{-6}{0}{\tiny{n23}}
+\putnode{a24}{n24}{-6}{0}{\tiny{n24}}
+\putnode{a25}{n25}{-6}{0}{\tiny{n25}}
+\putnode{a12}{n12}{-5}{0}{\tiny{n12}}
+\putnode{a3}{n3}{-6}{0}{\tiny{n3}}
+\putnode{a4}{n4}{-5}{0}{\tiny{n4}}
+
+\onslide<2->
+\putnode{x1}{n8}{0}{0}{\red{\tiny{$z=$}}}
+
+\onslide<3->
+\putnode{a8}{n8}{-5}{0}{\red{\tiny{n8}}}
+\putnode{a10}{n10}{-7}{0}{\red{\tiny{n10}}}
+\putnode{a21}{n21}{-6}{0}{\red{\tiny{n21}}}
+\putnode{a22}{n22}{-6}{0}{\red{\tiny{n22}}}
+\putnode{a23}{n23}{-6}{0}{\red{\tiny{n23}}}
+\putnode{a24}{n24}{-6}{0}{\red{\tiny{n24}}}
+\putnode{a25}{n25}{-6}{0}{\red{\tiny{n25}}}
+\putnode{a12}{n12}{-5}{0}{\red{\tiny{n12}}}
+\putnode{a3}{n3}{-6}{0}{\red{\tiny{n3}}}
+\putnode{a4}{n4}{-5}{0}{\red{\tiny{n4}}}
+
+
+\end{pspicture}
+
+}
+
+% \frame{ 
+% \frametitle{Test Case 4 : context sensitive incremental update}
+% }
+
+\part{Future Work}
+\frame{\partpage}
+
+\frame{
+\frametitle{Future Work}
+\begin{itemize}
+ \item Change the Kulang compiler to generate the affected region from the flow function.
+ \item Extending the method of reducing the size of affected region for multiple changes.
+ \item Persist the result of the solver.
 \end{itemize}
 
 
 }
 
 
-% \frame{
-% \frametitle{Issues in General Frameworks}
-% \begin{pspicture}(0,-20)(0,60)
-% %%\psframe(0,0)(50,50)
-% \putnode{n1}{origin}{50}{40}{%
-%      \psframebox[linewidth=.3,framesep=2.5]{top}}
-%  \putnode{a}{n1}{0}{10}{\textit{old}}
-
-% \putnode{n2}{n1}{0}{-15}{%
-%      \psframebox[linewidth=.3,framesep=2.5]{side level}}
-% \putnode{n3}{n2}{0}{-15}{%
-%      \psframebox[linewidth=.3,framesep=2.5]{propagate}}
-% \putnode{n4}{n3}{0}{-15}{%
-%      \psframebox[linewidth=.3,framesep=2.5]{constant}}
-%      %  \putnode{a}{n2}{-10}{0}{n2}
-% 
-% 
-% \putnode{n12}{n1}{30}{-20}{%
-%      \psframebox[linewidth=.3,framesep=2.5]{bottom}}
-%  \putnode{a}{n1}{28}{10}{\textit{new}}
-%     
-% % \putnode{a}{n22}{-10}{0}{n2}
-% % \putnode{a1}{n4}{15}{-10}{(a)}
-% \ncline{->}{n1}{n12}
-% \ncline{->}{n2}{n12}
-% \ncline{->}{n3}{n12}
-% \ncline{->}{n4}{n12}
-% 
-% \psline[linestyle=dotted](63,45)(63,-10)
-% 
-% \end{pspicture}
-% 
-% }
-
-
-% 
-% \frame{
-% \frametitle{Issues in Constant propagation- Change to Bottom}
-% \begin{pspicture}(0,25)(150,90)
-% %%\psframe(0,15)(150,90)
-% \onslide<1->
-% \putnode{n1}{origin}{40}{80}{%
-%      \psframebox[linewidth=.3,framesep=2.7]{\hspace{10mm}}}
-% \putnode{a}{n1}{-10}{0}{n1}
-% 
-% 
-% \putnode{n2}{n1}{40}{0}{%
-%      \psframebox[linewidth=.3,framesep=1.7]{$b=1$}}
-% \putnode{b}{n2}{-10}{0}{n2}
-% \putnode{b1}{n2}{0}{6}{\blue$\langle b=\top \rangle$}
-% \putnode{b2}{n2}{1}{-6}{\blue$\langle b=1 \rangle$}
-% 
-% \putnode{n3}{n1}{20}{-15}{%
-%      \psframebox[linewidth=.3,framesep=1.7]{\hspace{10mm}}}
-% \putnode{c}{n3}{-10}{0}{n3}
-% 
-% 
-% 
-% \putnode{n4}{n1}{20}{-30}{%
-%      \psframebox[linewidth=.3,framesep=1.7]{\hspace{10mm}}}
-% \putnode{d}{n4}{-10}{0}{n4}
-% 
-% 
-% \putnode{n5}{n1}{20}{-45}{%
-%      \psframebox[linewidth=.3,framesep=1.7]{\hspace{10mm}}}
-% \putnode{d}{n5}{-10}{0}{n5}
-% 
-% 
-% 
-% \ncline{->}{n1}{n3}
-% \ncline{->}{n2}{n3}
-% \ncline{->}{n3}{n4}
-% \ncline{->}{n4}{n5}
-% % \ncline{->}{n5}{n6}
-% \onslide<1-3>
-% \putnode{a1}{n1}{-5}{5}{\blue$\langle b=\top \rangle$}
-% \putnode{a2}{n1}{-5}{-5}{\blue$\langle b=1 \rangle$}
-% \putnode{c1}{n3}{-13}{3}{\blue$\langle b=1 \rangle$}
-% \putnode{c2}{n3}{-13}{-4}{\blue$\langle b=1 \rangle$}
-% \putnode{d1}{n4}{-13}{3}{\blue$\langle b=1 \rangle$}
-% \putnode{d2}{n4}{-13}{-4}{\blue$\langle b=1 \rangle$}
-% \putnode{d1}{n5}{-13}{3}{\blue$\langle b=1 \rangle$}
-% \putnode{d2}{n5}{-13}{-4}{\blue$\langle b=1 \rangle$}
-% 
-% \onslide<1-1>
-% \putnode{x}{n1}{0}{0}{$b=1$}
-% 
-% \onslide<2-2>
-% \putnode{x}{n1}{0}{0}{\red\sout{$b=1$}}
-% 
-% \onslide<3->
-% \putnode{x}{n1}{0}{0}{\blue$b=\bot$}
-% \onslide<3-3>
-% \putnode{u}{n5}{0}{-15}{\red Change to bottom}
-% 
-% 
-% \onslide<4->
-% \putnode{u}{n5}{0}{-15}{\red Directly propagate the change to its neighbour}
-% \putnode{a1}{n1}{-5}{5}{\blue$\langle b=\top \rangle$}
-% \putnode{a2}{n1}{-5}{-5}{\red$\langle b=\bot \rangle$}
-% \putnode{c1}{n3}{-13}{3}{\red$\langle b=\bot \rangle$}
-% \putnode{c2}{n3}{-13}{-4}{\red$\langle b=\bot \rangle$}
-% \putnode{d1}{n4}{-13}{3}{\red$\langle b=\bot \rangle$}
-% \putnode{d2}{n4}{-13}{-4}{\red$\langle b=\bot \rangle$}
-% \putnode{d1}{n5}{-13}{3}{\red$\langle b=\bot \rangle$}
-% \putnode{d2}{n5}{-13}{-4}{\red$\langle b=\bot \rangle$}
-% \end{pspicture}
-% }
-% 
-% \frame{
-% \frametitle{Issues in Constant propagation- Change to other value }
-% \begin{pspicture}(0,25)(150,90)
-% %%\psframe(0,15)(150,90)
-% \onslide<1->
-% \putnode{n1}{origin}{40}{80}{%
-%      \psframebox[linewidth=.3,framesep=2.7]{\hspace{10mm}}}
-% \putnode{a}{n1}{-10}{0}{n1}
-% 
-% 
-% \putnode{n2}{n1}{40}{0}{%
-%      \psframebox[linewidth=.3,framesep=1.7]{$b=1$}}
-% \putnode{b}{n2}{-10}{0}{n2}
-% \putnode{b1}{n2}{0}{6}{\blue$\langle b=\top \rangle$}
-% 
-% 
-% \putnode{n3}{n1}{20}{-15}{%
-%      \psframebox[linewidth=.3,framesep=1.7]{\hspace{10mm}}}
-% \putnode{c}{n3}{-10}{0}{n3}
-% 
-% 
-% 
-% \putnode{n4}{n1}{20}{-30}{%
-%      \psframebox[linewidth=.3,framesep=1.7]{\hspace{10mm}}}
-% \putnode{d}{n4}{-10}{0}{n4}
-% 
-% 
-% \putnode{n5}{n1}{20}{-45}{%
-%      \psframebox[linewidth=.3,framesep=1.7]{\hspace{10mm}}}
-% \putnode{d}{n5}{-10}{0}{n5}
-% 
-% 
-% 
-% \ncline{->}{n1}{n3}
-% \ncline{->}{n2}{n3}
-% \ncline{->}{n3}{n4}
-% \ncline{->}{n4}{n5}
-% % \ncline{->}{n5}{n6}
-% \onslide<1-3>
-% \putnode{b2}{n2}{1}{-6}{\blue$\langle b=1 \rangle$}
-% \putnode{a1}{n1}{-5}{5}{\blue$\langle b=\top \rangle$}
-% \putnode{a2}{n1}{-5}{-5}{\blue$\langle b=1 \rangle$}
-% \putnode{c1}{n3}{-13}{3}{\blue$\langle b=1 \rangle$}
-% \putnode{c2}{n3}{-13}{-4}{\blue$\langle b=1 \rangle$}
-% \putnode{d1}{n4}{-13}{3}{\blue$\langle b=1 \rangle$}
-% \putnode{d2}{n4}{-13}{-4}{\blue$\langle b=1 \rangle$}
-% \putnode{d1}{n5}{-13}{3}{\blue$\langle b=1 \rangle$}
-% \putnode{d2}{n5}{-13}{-4}{\blue$\langle b=1 \rangle$}
-% 
-% \onslide<1-1>
-% \putnode{x}{n1}{0}{0}{$b=1$}
-% 
-% \onslide<2-2>
-% \putnode{x}{n1}{0}{0}{\red\sout{$b=1$}}
-% 
-% \onslide<3->
-% \putnode{x}{n1}{0}{0}{\red$b=3$}
-% 
-% \onslide<3-3>
-% \putnode{u}{n5}{0}{-15}{\red Side Level change}
-% 
-% \onslide<4->
-% \putnode{u}{n5}{0}{-15}{\red Depends on value at OUT$_2$}
-% \putnode{a1}{n1}{-5}{5}{\blue$\langle b=\top \rangle$}
-% \putnode{a2}{n1}{-5}{-5}{\red$\langle b=3 \rangle$}
-% \putnode{b2}{n2}{1}{-6}{\red$\langle b=1 \rangle$}
-% 
-% \onslide<5->
-% \putnode{c1}{n3}{-13}{3}{\red$\langle b=\bot \rangle$}
-% \putnode{c2}{n3}{-13}{-4}{\red$\langle b=\bot \rangle$}
-% \putnode{d1}{n4}{-13}{3}{\red$\langle b=\bot \rangle$}
-% \putnode{d2}{n4}{-13}{-4}{\red$\langle b=\bot \rangle$}
-% \putnode{d1}{n5}{-13}{3}{\red$\langle b=\bot \rangle$}
-% \putnode{d2}{n5}{-13}{-4}{\red$\langle b=\bot \rangle$}
-% \end{pspicture}
-% }
-% 
-% \frame{
-% \frametitle{Issues in Constant propagation}
-% \begin{itemize}
-%  \item Bottom functions corresponds to reading values from input
-%     \begin{itemize}
-%      \item Changing a flow functions in a node s.t it becomes a bottom function is expected to be rare
-%     \end{itemize}
-% 
-%  \item Bottom is also produced due to meet operation
-%  \begin{itemize}
-%  \item May be possible to restrict the size of affected region
-% %  \item Need a method to restrict the size of affected region
-%  \end{itemize}
-% \end{itemize}
-% }
-% 
-% \frame{
-% \frametitle{Restrict the size of affected region }
-% \begin{pspicture}(0,25)(150,90)
-% %%\psframe(0,15)(150,90)
-% \onslide<1->
-% \putnode{n1}{origin}{40}{80}{%
-%      \psframebox[linewidth=.3,framesep=2.7]{\hspace{10mm}}}
-% \putnode{a}{n1}{-10}{0}{n1}
-% \putnode{a1}{n1}{-5}{5}{\blue$\langle b=\top \rangle$}
-% 
-% \putnode{n2}{n1}{40}{0}{%
-%      \psframebox[linewidth=.3,framesep=1.7]{$b=1$}}
-% \putnode{b}{n2}{-10}{0}{n2}
-% \putnode{b1}{n2}{0}{6}{\blue$\langle b=\top \rangle$}
-% 
-% 
-% \putnode{n3}{n1}{20}{-15}{%
-%      \psframebox[linewidth=.3,framesep=1.7]{\hspace{10mm}}}
-% \putnode{c}{n3}{-10}{0}{n3}
-% 
-% 
-% 
-% \putnode{n4}{n1}{20}{-30}{%
-%      \psframebox[linewidth=.3,framesep=1.7]{\hspace{10mm}}}
-% \putnode{d}{n4}{-10}{0}{n4}
-% 
-% 
-% \putnode{n5}{n1}{20}{-45}{%
-%      \psframebox[linewidth=.3,framesep=1.7]{\hspace{10mm}}}
-% \putnode{d}{n5}{-10}{0}{n5}
-% 
-% 
-% 
-% \ncline{->}{n1}{n3}
-% \ncline{->}{n2}{n3}
-% \ncline{->}{n3}{n4}
-% \ncline{->}{n4}{n5}
-% % \ncline{->}{n5}{n6}
-% \onslide<1-2>
-% \putnode{b2}{n2}{1}{-6}{\blue$\langle b=1 \rangle$}
-% 
-% \putnode{a2}{n1}{-5}{-5}{\blue$\langle b=2 \rangle$}
-% \putnode{c1}{n3}{-13}{3}{\blue$\langle b=\bot \rangle$}
-% \putnode{c2}{n3}{-13}{-4}{\blue$\langle b=\bot \rangle$}
-% \putnode{d1}{n4}{-13}{3}{\blue$\langle b=\bot \rangle$}
-% \putnode{d2}{n4}{-13}{-4}{\blue$\langle b=\bot \rangle$}
-% \putnode{d1}{n5}{-13}{3}{\blue$\langle b=\bot \rangle$}
-% \putnode{d2}{n5}{-13}{-4}{\blue$\langle b=\bot \rangle$}
-% 
-% \onslide<1-1>
-% \putnode{x}{n1}{0}{0}{$b=2$}
-% 
-% \onslide<2-2>
-% \putnode{x}{n1}{0}{0}{\red \sout{$b=2$}}
-% 
-% \onslide<3->
-% \putnode{x}{n1}{0}{0}{\red $b=3$}
-% 
-% \onslide<3-3>
-% \putnode{u}{n5}{0}{-15}{\red Side Level Change}
-% 
-% \onslide<4->
-% \putnode{a1}{n1}{-5}{5}{\blue$\langle b=\top \rangle$}
-% \putnode{a2}{n1}{-5}{-5}{\red$\langle b=3 \rangle$}
-% \putnode{b2}{n2}{1}{-6}{\red$\langle b=1 \rangle$}
-% 
-% \onslide<5-6>
-% \putnode{u}{n5}{0}{-15}{\red No need to create affected region}
-% \putnode{c1}{n3}{-13}{3}{\blue$\langle b=\bot \rangle$}
-% \putnode{c2}{n3}{-13}{-4}{\blue$\langle b=\bot \rangle$}
-% \putnode{d1}{n4}{-13}{3}{\blue$\langle b=\bot \rangle$}
-% \putnode{d2}{n4}{-13}{-4}{\blue$\langle b=\bot \rangle$}
-% \putnode{d1}{n5}{-13}{3}{\blue$\langle b=\bot \rangle$}
-% \putnode{d2}{n5}{-13}{-4}{\blue$\langle b=\bot \rangle$}
-% 
-% \onslide<6->
-% % \putnode{u}{n5}{0}{-15}{\red No need to create affected region}
-% \putnode{c1}{n3}{-13}{3}{\lightblue$\langle b=\bot \rangle$}
-% \putnode{c2}{n3}{-13}{-4}{\lightblue$\langle b=\bot \rangle$}
-% \putnode{d1}{n4}{-13}{3}{\lightblue$\langle b=\bot \rangle$}
-% \putnode{d2}{n4}{-13}{-4}{\lightblue$\langle b=\bot \rangle$}
-% \putnode{d1}{n5}{-13}{3}{\lightblue$\langle b=\bot \rangle$}
-% \putnode{d2}{n5}{-13}{-4}{\lightblue$\langle b=\bot \rangle$}
-% \putnode{w}{n4}{0}{0}{\psovalbox[linestyle=dashed, linecolor=red, linewidth=.6]{\rule{0mm}{33mm} \rule{15mm}{0mm}}}
-% 
-% \end{pspicture}
-% }
-% 
-% 
-%  
-% 
-% 
-% 
-% 
-% 
-% \begin{frame}[fragile]
-%   \frametitle{Kulang specifications}
-%   \begin{itemize}
-%    \item Current Kulang specifications accepts:
-%    \begin{itemize}
-%     \item Forward and backward flow functions and meet functions
-%     \item Forward and backward lattice types
-%     \item Forward and backward boundary values and top values
-%    \end{itemize}
-% 
-%   \end{itemize}
-% 
-% \end{frame}
-% 
-% 
-% 
-% \begin{frame}[fragile]
-%   \frametitle{Kulang specifications}
-%   \begin{verbatim}
-% Forwardlattice Rec ::  res; // lattice types
-% Backwardlattice Liv :: livenesslattice;
-% 
-% //types of forward and backward lattices
-% ForwardTop : (res){};
-% BackwardTop : (livenesslattice){};
-% 
-% A ForwardMeet B : Meet(A,B); //meet functions
-% A BackwardMeet B : A+B;
-% 
-% ForwardBoundaryValue : (res){}; // boundary values
-% BackwardBoundaryValue :(livenesslattice){} ;
-% 
-% // Specification of backward flow functions 
-% BackwardNodeflow( n: Binary, R: Rec, L:Liv )
-% 
-%   \end{verbatim}
-% \end{frame}
-% 
-% 
-% 
-% \part{Liveness-based Reaching Definition analysis}
-% \frame{\partpage}
-% 
-% \frame{
-% \frametitle{Reaching Definition analysis}
-% \begin{itemize}
-%  \item In order to understand PRISM and Kulang specification- implemented Reaching Definition analysis for both with and
-%  without Liveness
-% \end{itemize}
-% }
-% 
-%  \frame{
-%  \frametitle{Data flow equations for Liveness-based Reaching Definition analysis}
-%  \begin{equation*}
-% \begin{split}
-%  \mbox{\textit{LIn}}_n &= f_n(\mbox{\textit{Out}}_n) \\
-%  \mbox{\textit{LOut}}_n &= \left\{ \begin{array}{ll}
-%  	  BI & \mbox{n is End}\\
-%  	  \bigcup\limits_{s \in succ(n)} In_s & \mbox{otherwise}
-%  	  \end{array} \right.\\ 
-%  \mbox{where,}\\
-% f_n(X) &= \left\{ \begin{array}{ll}
-% 	  (X-\{y\})\cup(\mbox{\textit{Opd(e)}}\cap \mbox{\textit{Var}}) & \mbox{n is y = e, e $\in$ Expr, y $\in$ X}\\
-%  	  X-{y} & \mbox{n is input(y)}\\
-%  	  X \cup {y} & \mbox{n is use(y)} \\
-%  	  X & \mbox{otherwise}\\
-% 	  \end{array} \right.\\
-% \end{split} 
-% \end{equation*}
-% }
-% 
-% \frame{
-%  \frametitle{Data flow equations for Liveness-based Reaching Definition analysis}	  
-%  \begin{equation*}
-% \begin{split}	  
-%  \mbox{\textit{RIn}}_n &= \left\{ \begin{array}{ll}
-%  	  \mbox{\textit{RBI}} & \mbox{n is Start block}\\
-%  	  \bigcup\limits_{p \in pred(n)}Out_p\mid_{LIn_n} & \mbox{otherwise}
-%  	  \end{array} \right.\\ 
-%  	  \\
-%  \mbox{\textit{ROut}}_n &= \mbox{\textit{Gen}}_n \cup (\mbox{\textit{In}}_n - \mbox{\textit{Kill}}_n) \mid_{LOut_n} \\
-%  \\
-%  \mbox{\textit{RBI}} &= \{d_x : x = \mbox{\textit{undef}} \mid x \in \mbox{\textit{Var}}\} 	  \\
-% \end{split} 
-% \end{equation*}
-%  }
-% 
-% \frame{ 
-% \frametitle{Example for Liveness-based Reaching Definition}
-% \begin{pspicture}(0,0)(100,90)
-% %%\psframe(0,0)(100,90)
-% \onslide<1->
-% \putnode{n1}{origin}{55}{80}{%
-%      \psframebox[linewidth=.3,framesep=1.7]{\hspace{10mm}}}
-% \putnode{a}{n1}{-10}{0}{n1}
-% 
-% \putnode{n2}{n1}{0}{-15}{%
-%      \psframebox[linewidth=.3,framesep=1.7]{$b=$}}
-% \putnode{b}{n2}{-8}{0}{n2}
-% 
-% \putnode{n3}{n2}{-20}{-15}{%
-%      \psframebox[linewidth=.3,framesep=2.7]{$a=$}}
-% 
-% \putnode{c}{n3}{10}{0}{n3}
-% 
-% \putnode{n4}{n2}{20}{-15}{%
-%      \psframebox[linewidth=.3,framesep=2.5]{$c=$}}
-% \putnode{d}{n4}{-10}{0}{n4}
-% 
-% \putnode{n5}{n2}{0}{-30}{%
-%      \psframebox[linewidth=.3,framesep=0.7]{$b=a+c$}}
-% \putnode{e}{n5}{-12}{0}{n5}
-% 
-% \putnode{n6}{n5}{0}{-15}{%
-%      \psframebox[linewidth=.3,framesep=1.5]{use$(b)$}}
-% \putnode{f}{n6}{-9}{0}{n6}
-% 
-% \ncline{->}{n1}{n2}
-% \ncline{->}{n2}{n3}
-% \ncline{->}{n3}{n5}
-% \ncline{->}{n2}{n4}
-% \ncline{->}{n4}{n5}
-% \ncline{->}{n5}{n6}
-% % \ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=-30,
-% % 		linearc=0.5,offsetA=2, offsetB=2]{->}{n5}{n2}
-% % \onslide<2->
-% % \putnode{x}{n1}{0}{10}{\blue Strongly Liveness pass}
-% 
-% \onslide<3-8>
-% \putnode{h}{n1}{0}{9}{\blue Strongly Liveness Pass}
-% 
-% \onslide<4-> \putnode{x1}{n6}{-10}{-5}{\blue\{$\phi$\}}
-% \onslide<5-> \putnode{x1}{n6}{-10}{5}{\blue\{$b$\}}
-% \putnode{x1}{n5}{-10}{-5}{\blue\{$b$\}}
-% 
-% \onslide<6-> \putnode{x1}{n5}{-13}{3}{\blue\{$a,c$\}}
-% \putnode{x1}{n4}{-13}{-5}{\blue\{$a,c$\}}
-% \putnode{x1}{n3}{-10}{-5}{\blue\{$a,c$\}}
-% 
-% \onslide<7-> \putnode{x1}{n4}{-12}{4}{\blue\{$a$\}}
-% \putnode{x1}{n3}{-9}{6}{\blue\{$c$\}}
-% 
-% \onslide<8->
-% \putnode{x1}{n1}{-10}{5}{\blue\{$a,c$\}}
-% \putnode{x1}{n1}{-10}{-5}{\blue\{$a,c$\}}
-% \putnode{x1}{n2}{-10}{5}{\blue\{$a,c$\}}
-% \putnode{x1}{n2}{-10}{-3}{\blue\{$a,c$\}}
-% 
-% 
-% \onslide<9->
-% \putnode{h}{n1}{0}{9}{\red Reaching Definition Pass}
-% 
-% % \onslide<10->
-% \onslide<10->
-% \putnode{a1}{n1}{7}{4}{\red$\langle \phi \rangle$}
-% \onslide<11->\putnode{a2}{n1}{7}{-4}{\red$\langle \phi \rangle$}
-% \onslide<12->\putnode{b2}{n2}{7}{5}{\red$\langle \phi \rangle$}
-% \onslide<13->\putnode{b2}{n2}{8}{-2}{\red$\langle \phi \rangle$}
-% \putnode{c1}{n3}{11}{4}{\red$\langle \phi \rangle$}
-% \putnode{c2}{n3}{13}{-4}{\red$\langle (a,3) \rangle$}
-% \putnode{d1}{n4}{9}{3}{\red$\langle \phi \rangle$}
-% \putnode{d2}{n4}{10}{-6}{\red$\langle (c,4) \rangle$}
-% 
-% \onslide<14->\putnode{d1}{n5}{19}{3}{\red$\langle (a,3)(c,4)\rangle$}
-% \onslide<15->\putnode{d2}{n5}{13}{-5}{\red$\langle (b,5) \rangle$}
-% \onslide<15-> \putnode{x1}{n6}{10}{-5}{\red$\langle \phi \rangle$}
-% \onslide<15-> \putnode{x1}{n6}{12}{5}{\red$\langle (b,5)\rangle$}
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% % \onslide<3->
-% % \putnode{x}{n3}{0}{0}{\red\sout{$b=2$}}
-% % 	
-% % \onslide<4->
-% % \putnode{j}{n1}{50}{-30}{ \psframebox[linewidth=.3,framesep=0.7]{lower}}
-% % \putnode{k}{j}{30}{0}{ \psframebox[linewidth=.3,framesep=0.7]{propagate}}
-% % 
-% % \onslide<5->
-% % \ncline{->}{j}{k}
-% % 
-% % \onslide<6->
-% % \putnode{l}{k}{-15}{-10}{\red Bottom to Top change}
-% 
-% \end{pspicture}
-% 
-% }
-%  
-% 
-% 
-% 
-% 
-% \part{Performance Measurement}
-% \frame{\partpage}
-% 
-% \frame{
-% \frametitle{Percentage reduction in size of data set}
-%  \begin{figure}
-%     \centering
-%     \includegraphics[width = 0.9\textwidth]{./graph.eps}
-%     \caption{Percentage reduction in size of data set}
-%   \end{figure}
-% }
-% 
-% 
-% \frame{
-% \frametitle{Limitations of current version of PRISM}
-% \begin{itemize}
-% \item<1-> PRISM does not perform incremental analysis
-% \item<2-> Meet function needs to be explicitly defined in kulang specifications
-% \item<2->The meet function can be inferred from the lattice of the data flow problem
-% \item<3-> There is no proper way to debug the kulang specifications 
-% \item<4-> Hard to understand the specification language
-% \end{itemize}
-% }
-% 
-% \part{Future Work}
-% \frame{\partpage}
-% 
-% \frame{
-% \frametitle{Future Work}
-% \begin{itemize}
-% \item<1-> Method to restrict the size of affected region in Constant Propagation
-% \item<2-> Incremental analysis in PRISM 
-% \item<3-> Simplified Kulang specification
-% \end{itemize}
-% }
 
 \part{Thank You !}
 \frame{\partpage}
