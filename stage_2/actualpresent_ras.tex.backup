@@ -2062,10 +2062,83 @@ When program undergoes changes:
       
  
 \end{pspicture}
+}
+
+\part{Incremental Solver}
+\frame{\partpage}
+
+\frame{ 
+\frametitle{Architecture of Incremental PRISM}
+\begin{pspicture}(-20,-20)(115,90)
+
+% \begin{psframe}(-20,-20)(115,90)
+\putnode{n1}{origin}{-10}{85}{%
+	  {\textbf{Old IR}}
+     }
+  
+\putnode{n2}{n1}{40}{-5}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Preprocessor}}
+     
+\putnode{n3}{n1}{0}{-10}{%
+	  {\textbf{New IR}}
+     }
+\putnode{n4}{n2}{50}{0}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Re-initializer}}
+     
+\putnode{n5}{n4}{0}{-25}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Solver}}
+
+\putnode{n6}{n5}{0}{-25}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Merger}}
+\putnode{n13}{n6}{-30}{0}{%
+     {\textbf{Old Solution}}}
+     
+\putnode{n7}{n6}{0}{-15}{%
+	  {\textbf{Updated Results}}
+     }
+
+\putnode{n8}{n5}{-40}{15}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Query specification}}
+\putnode{n11}{n8}{18}{0}
+
+\putnode{n9}{n5}{-40}{0}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Utility functions}}
+
+\putnode{n10}{n5}{-45}{-15}{%
+     \psframebox[linewidth=.3,framesep=1.7]{Data flow Analysis API}}
+\putnode{n12}{n10}{22}{0}
+
+
+\ncline{->}{n1}{n2}
+\ncline{->}{n3}{n2}
+\ncline{->}{n2}{n4}
+\ncline{->}{n4}{n5}
+\ncline{->}{n5}{n6}
+\ncline{->}{n6}{n7}
+\ncline{->}{n11}{n5}
+\ncline{->}{n9}{n5}
+\ncline{->}{n12}{n5}
+\ncline{->}{n13}{n6}
+% \end{psframe}
+
+\end{pspicture}
 
 }
 
 
+\frame{ 
+\frametitle{Assumptions}
+\begin{itemize}
+ \item Pointer information will remain same.
+ \item No change in the context information.
+ \item Declaration of variable haven't change.
+ \item No structural change in the graph.
+ \item A name can refer to a single variable in a program at any given program point.
+ \item past information is stored flow sensitively.
+\end{itemize}
+
+
+}
 
 
 % \frame{

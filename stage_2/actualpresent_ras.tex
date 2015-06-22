@@ -2071,8 +2071,8 @@ When program undergoes changes:
 \frametitle{Architecture of Incremental PRISM}
 \begin{pspicture}(-20,-20)(115,90)
 
-\begin{psframe}(-20,-20)(115,90)
-\putnode{n1}{origin}{0}{80}{%
+% \begin{psframe}(-20,-20)(115,90)
+\putnode{n1}{origin}{-10}{85}{%
 	  {\textbf{Old IR}}
      }
   
@@ -2085,15 +2085,15 @@ When program undergoes changes:
 \putnode{n4}{n2}{50}{0}{%
      \psframebox[linewidth=.3,framesep=1.7]{Re-initializer}}
      
-\putnode{n5}{n4}{0}{-30}{%
+\putnode{n5}{n4}{0}{-25}{%
      \psframebox[linewidth=.3,framesep=1.7]{Solver}}
 
-\putnode{n6}{n5}{0}{-30}{%
+\putnode{n6}{n5}{0}{-25}{%
      \psframebox[linewidth=.3,framesep=1.7]{Merger}}
 \putnode{n13}{n6}{-30}{0}{%
      {\textbf{Old Solution}}}
      
-\putnode{n7}{n6}{0}{-20}{%
+\putnode{n7}{n6}{0}{-15}{%
 	  {\textbf{Updated Results}}
      }
 
@@ -2119,11 +2119,204 @@ When program undergoes changes:
 \ncline{->}{n9}{n5}
 \ncline{->}{n12}{n5}
 \ncline{->}{n13}{n6}
-\end{psframe}
+% \end{psframe}
 
 \end{pspicture}
 
 }
+
+
+\frame{ 
+\frametitle{Assumptions}
+\begin{itemize}
+ \item Pointer information will remain same.
+ \item No change in the context information.
+ \item Declaration of variable haven't change.
+ \item No structural change in the graph.
+ \item A name can refer to a single variable in a program at any given program point.
+ \item past information is stored flow sensitively.
+\end{itemize}
+}
+
+
+\part{Testing}
+\frame{\partpage}
+
+\frame{ 
+\frametitle{Test Case 1 : $a$ is a global variable}
+\begin{pspicture}(0,20)(150,250)
+ \psframe(-20,0)(160,275)
+\rput(60,270){\rnode{a}{main}}
+\putnode{n1}{origin}{40}{80}{%
+     \psframebox[linewidth=.3,framesep=2.5, framearc=.4]{\hspace{10mm}}}
+\rput(50,265){\rnode{a}{n1}}   
+
+\putnode{n2}{n1}{0}{-13}{%
+     \psframebox[linewidth=.3,framesep=1.5, framearc=.4]{if( )}}
+\rput(52,252){\rnode{a}{n2}}    
+
+\putnode{n3}{n2}{25}{-13}{%
+     \psframebox[linewidth=.3,framesep=1.5, framearc=.4]{while( )}}
+\rput(74,239){\rnode{a}{n3}} 
+
+\putnode{n4}{n3}{0}{-13}{%
+     \psframebox[linewidth=.3,framesep=1.5, framearc=.4]{$z=1$}}
+\rput(76,226){\rnode{a}{n4}} 
+     
+\putnode{n5}{n4}{0}{-13}{%
+     \psframebox[linewidth=.3,framesep=1.5, framearc=.4]{if( )}}
+\rput(76,213){\rnode{a}{n5}}
+
+\putnode{n6}{n5}{-20}{-13}{%
+     \psframebox[linewidth=.3,framesep=1.5, framearc=.4]{if( )}}
+\rput(56,200){\rnode{a}{n6}}
+
+\putnode{n8}{n6}{15}{-13}{%
+     \psframebox[linewidth=.3,framesep=1.5, framearc=.4]{$z=$}}
+\rput(71,187){\rnode{a}{n8}}
+     
+\putnode{n10}{n8}{0}{-13}{%
+     \psframebox[linewidth=.3,framesep=1.5, framearc=.4]{func1(z)}}
+     \rput(67,174){\rnode{a}{n10}}
+
+\putnode{n13}{n10}{-40}{0}{%
+     \psframebox[linewidth=.3,framesep=1.5, framearc=.4]{\hspace{10mm}}}
+     \rput(30,174){\rnode{a}{n13}}
+
+\putnode{n14}{n13}{0}{-13}{%
+     \psframebox[linewidth=.3,framesep=1.5, framearc=.4]{\hspace{10mm}}}
+     \rput(30,161){\rnode{a}{n14}}
+     
+\putnode{n7}{n5}{25}{-13}{%
+     \psframebox[linewidth=.3,framesep=1.5, framearc=.4]{$a=$}}
+\rput(103,200){\rnode{a}{n7}}
+
+\putnode{n9}{n7}{0}{-13}{%
+     \psframebox[linewidth=.3,framesep=1.5, framearc=.4]{\hspace{10mm}}}
+\rput(100,187){\rnode{a}{n9}}
+     
+\putnode{n11}{n9}{0}{-13}{%
+     \psframebox[linewidth=.3,framesep=1.5, framearc=.4]{func( )}}
+     \rput(99,174){\rnode{a}{n11}}
+
+\putnode{n12}{n11}{-20}{-13}{%
+     \psframebox[linewidth=.3,framesep=1.5, framearc=.4]{$a=$}}
+     \rput(79,161){\rnode{a}{n12}}
+
+\ncline{->}{n1}{n2}
+\ncline{->}{n2}{n3}
+\ncline{->}{n3}{n4}
+\ncline{->}{n4}{n5}
+\ncline{->}{n5}{n6}
+\ncline{->}{n5}{n7}
+\ncline{->}{n7}{n9}
+\ncline{->}{n9}{n11}
+\ncline{->}{n11}{n12}
+\ncline{->}{n6}{n8}
+\ncline{->}{n8}{n10}
+\ncline{->}{n10}{n12}
+\ncline{->}{n6}{n13}
+\ncline{->}{n13}{n14}
+\ncline{->}{n2}{n13}
+\ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=-30,
+		linearc=0.5,offsetA=2, offsetB=2]{->}{n12}{n3}
+\rput(79,145){\rnode{a1}{(a)}}
+		
+		
+\rput(20,125){\rnode{f1}{func()}}	
+\putnode{n1}{origin}{20}{120}{%
+     \psframebox[linewidth=.3,framesep=1.7]{ \hspace{10mm}}}
+\rput(9,120){\rnode{a}{n15}}
+
+\putnode{n0}{n1}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=1.7]{$a=$}}
+     \rput(10,105){\rnode{a}{n16}}
+
+\putnode{n2}{n0}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=1.7]{\hspace{10mm}}}
+ 
+\putnode{n3}{n2}{-20}{-15}{%
+     \psframebox[linewidth=.3,framesep=1.7]{\hspace{10mm}}}
+ \rput(9,90){\rnode{a}{n17}}
+
+\putnode{n4}{n2}{20}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.5]{\hspace{10mm}}}
+ \rput(-11,75){\rnode{a}{n18}}
+
+\putnode{n5}{n2}{0}{-30}{%
+     \psframebox[linewidth=.3,framesep=1.7]{\hspace{10mm}}}
+ \rput(9,60){\rnode{a}{n20}}
+
+\putnode{n6}{n5}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.5]{\hspace{10mm}}}
+ \rput(28,75){\rnode{a}{n19}}
+
+\rput(20,37){\rnode{b}{(b)}}
+\ncline{->}{n1}{n0}
+\ncline{->}{n0}{n2}
+\ncline{->}{n2}{n3}
+\ncline{->}{n3}{n5}
+\ncline{->}{n2}{n4}
+\ncline{->}{n4}{n5}
+\ncline{->}{n5}{n6}
+\ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=-30,
+		linearc=0.5,offsetA=2, offsetB=2]{->}{n5}{n2}
+		
+\rput(120,125){\rnode{f2}{func1()}}
+\putnode{n1}{origin}{120}{120}{%
+     \psframebox[linewidth=.3,framesep=1.7]{ \hspace{10mm}}}
+ \rput(109,120){\rnode{a}{n21}}
+
+\putnode{n2}{n1}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=1.7]{\hspace{10mm}}}
+ \rput(109,105){\rnode{a}{n22}}
+
+\putnode{n3}{n2}{-20}{-15}{%
+     \psframebox[linewidth=.3,framesep=1.7]{\hspace{10mm}}}
+ \rput(88,90){\rnode{a}{n23}}
+
+\putnode{n4}{n2}{20}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.5]{\hspace{10mm}}}
+ \rput(128,90){\rnode{a}{n24}}
+
+\putnode{n5}{n2}{0}{-30}{%
+     \psframebox[linewidth=.3,framesep=1.7]{$m=$}}
+ \rput(110,75){\rnode{a}{n25}}
+
+\putnode{n6}{n5}{0}{-15}{%
+     \psframebox[linewidth=.3,framesep=2.5]{\hspace{10mm}}}
+\rput(108,60){\rnode{a}{n26}}
+
+\rput(120,45){\rnode{b}{(c)}}
+\ncline{->}{n1}{n2}
+\ncline{->}{n2}{n3}
+\ncline{->}{n3}{n5}
+\ncline{->}{n2}{n4}
+\ncline{->}{n4}{n5}
+\ncline{->}{n5}{n6}
+% \ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=-30,
+% 		linearc=0.5,offsetA=2, offsetB=2]{->}{n5}{n2}
+
+
+		
+\end{pspicture}
+
+}
+
+
+\frame{ 
+\frametitle{Test Case 2 : $a$ is a local variable}
+}
+
+
+\frame{ 
+\frametitle{Test Case 3 : passed as a parameter}
+}
+
+\frame{ 
+\frametitle{Test Case 4 : context sensitive incremental update}
+}
+
 
 
 % \frame{
