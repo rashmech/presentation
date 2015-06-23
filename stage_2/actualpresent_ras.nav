@@ -111,7 +111,7 @@
 \headcommand {\beamer@framepages {122}{122}}
 \headcommand {\slideentry {0}{0}{46}{123/125}{}{5}}
 \headcommand {\beamer@framepages {123}{125}}
-\headcommand {\partentry {Incremental Solver}{6}}
+\headcommand {\partentry {Incremental Solver for PRISM}{6}}
 \headcommand {\beamer@partpages {120}{125}}
 \headcommand {\beamer@sectionpages {120}{125}}
 \headcommand {\beamer@subsectionpages {120}{125}}
@@ -123,36 +123,38 @@
 \headcommand {\beamer@framepages {128}{128}}
 \headcommand {\slideentry {0}{0}{50}{129/129}{}{6}}
 \headcommand {\beamer@framepages {129}{129}}
-\headcommand {\partentry {Testing}{7}}
-\headcommand {\beamer@partpages {126}{129}}
-\headcommand {\beamer@sectionpages {126}{129}}
-\headcommand {\beamer@subsectionpages {126}{129}}
-\headcommand {\slideentry {0}{0}{51}{130/130}{}{7}}
+\headcommand {\slideentry {0}{0}{51}{130/130}{}{6}}
 \headcommand {\beamer@framepages {130}{130}}
+\headcommand {\partentry {Testing}{7}}
+\headcommand {\beamer@partpages {126}{130}}
+\headcommand {\beamer@sectionpages {126}{130}}
+\headcommand {\beamer@subsectionpages {126}{130}}
 \headcommand {\slideentry {0}{0}{52}{131/131}{}{7}}
 \headcommand {\beamer@framepages {131}{131}}
-\headcommand {\slideentry {0}{0}{53}{132/134}{}{7}}
-\headcommand {\beamer@framepages {132}{134}}
-\headcommand {\slideentry {0}{0}{54}{135/137}{}{7}}
-\headcommand {\beamer@framepages {135}{137}}
-\headcommand {\slideentry {0}{0}{55}{138/140}{}{7}}
-\headcommand {\beamer@framepages {138}{140}}
+\headcommand {\slideentry {0}{0}{53}{132/132}{}{7}}
+\headcommand {\beamer@framepages {132}{132}}
+\headcommand {\slideentry {0}{0}{54}{133/135}{}{7}}
+\headcommand {\beamer@framepages {133}{135}}
+\headcommand {\slideentry {0}{0}{55}{136/138}{}{7}}
+\headcommand {\beamer@framepages {136}{138}}
+\headcommand {\slideentry {0}{0}{56}{139/141}{}{7}}
+\headcommand {\beamer@framepages {139}{141}}
 \headcommand {\partentry {Future Work}{8}}
-\headcommand {\beamer@partpages {130}{140}}
-\headcommand {\beamer@sectionpages {130}{140}}
-\headcommand {\beamer@subsectionpages {130}{140}}
-\headcommand {\slideentry {0}{0}{56}{141/141}{}{8}}
-\headcommand {\beamer@framepages {141}{141}}
+\headcommand {\beamer@partpages {131}{141}}
+\headcommand {\beamer@sectionpages {131}{141}}
+\headcommand {\beamer@subsectionpages {131}{141}}
 \headcommand {\slideentry {0}{0}{57}{142/142}{}{8}}
 \headcommand {\beamer@framepages {142}{142}}
-\headcommand {\partentry {Thank You !}{9}}
-\headcommand {\beamer@partpages {141}{142}}
-\headcommand {\beamer@sectionpages {141}{142}}
-\headcommand {\beamer@subsectionpages {141}{142}}
-\headcommand {\slideentry {0}{0}{58}{143/143}{}{9}}
+\headcommand {\slideentry {0}{0}{58}{143/143}{}{8}}
 \headcommand {\beamer@framepages {143}{143}}
-\headcommand {\beamer@partpages {143}{143}}
-\headcommand {\beamer@subsectionpages {143}{143}}
-\headcommand {\beamer@sectionpages {143}{143}}
-\headcommand {\beamer@documentpages {143}}
-\headcommand {\def \inserttotalframenumber {58}}
+\headcommand {\partentry {Thank You!}{9}}
+\headcommand {\beamer@partpages {142}{143}}
+\headcommand {\beamer@sectionpages {142}{143}}
+\headcommand {\beamer@subsectionpages {142}{143}}
+\headcommand {\slideentry {0}{0}{59}{144/144}{}{9}}
+\headcommand {\beamer@framepages {144}{144}}
+\headcommand {\beamer@partpages {144}{144}}
+\headcommand {\beamer@subsectionpages {144}{144}}
+\headcommand {\beamer@sectionpages {144}{144}}
+\headcommand {\beamer@documentpages {144}}
+\headcommand {\def \inserttotalframenumber {59}}

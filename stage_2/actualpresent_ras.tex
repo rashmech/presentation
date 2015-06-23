@@ -109,7 +109,7 @@
 (\emph{Project Guide: Prof. Uday Khedker})}
 \institute[IIT Bombay]{\includegraphics{logo.eps}\\
 Department of Computer Science and Engineering, \\ 
-Indian Institute of Technology, Bombay}
+Indian Institute of Technology Bombay}
 %\titlegraphic{\scalebox{.9}{\includegraphics{logo.eps}}}
 \date[]{June 2015}
 
@@ -548,16 +548,16 @@ Indian Institute of Technology, Bombay}
 
 \frame{
 \frametitle{Outline of the talk}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
   \item Incremental Data Flow Analysis
-  \begin{itemize}
+  \begin{itemize} \setlength \itemsep{1em}
    \item Bit-vector Frameworks
   \item  General Frameworks
   \end{itemize}
    \item Method to Reduce the Size of Affected Region
   \item Overview of PRISM 
-  \item Incremental Driver for PRISM
-  \begin{itemize}
+  \item Incremental Solver for PRISM
+  \begin{itemize} \setlength \itemsep{1em}
     \item Architecture
     \item Testing
    \end{itemize}
@@ -571,8 +571,8 @@ Indian Institute of Technology, Bombay}
 \frame{
 \frametitle{Why Incremental Analysis?}
 When program undergoes changes:
-\begin{itemize}
- \item Some or all computed data flow information become invalid
+\begin{itemize} \setlength \itemsep{1em}
+ \item Some or all computed data flow information becomes invalid
  \item Re-computation is required
 \end{itemize}
 }
@@ -673,7 +673,7 @@ When program undergoes changes:
 
 \frame{ 
 \frametitle{Motivating Example - Available Expression Analysis}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item It requires 3 iterations to converge
 \end{itemize}
 }
@@ -748,11 +748,11 @@ When program undergoes changes:
 
 \frame{ 
 \frametitle{Motivating Example - Available Expression Analysis}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
 %  \item Recomputing the values from the scratch is very inefficient 
-\item may unnecessarily analyze unaffected program behaviours which leads to redundant computation of old values which is very inefficient.
+\item May unnecessarily analyze unaffected program behaviours which leads to redundant computation of old values which is very inefficient.
  \item Need an incremental analysis:
-      \begin{itemize}
+      \begin{itemize} \setlength \itemsep{1em}
        \item modifies only affected data flow information
        \item more cost effective than \textbf{exhaustive} analysis
       \end{itemize}
@@ -765,9 +765,9 @@ When program undergoes changes:
 
 \frame{ 
 \frametitle{Possible changes}
-\begin{itemize}
- \item Due to program change, following changes are possible\footnote {Following slides talk about a change in flow function}:
- \begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
+ \item Due to program change, the following changes are possible\footnote {Following slides talk about a change in flow function}:
+ \begin{itemize} \setlength \itemsep{1em}
   \item Change in flow functions
   \item Change in control flow graph
   \item Change in lattice
@@ -779,9 +779,9 @@ When program undergoes changes:
 
 \frame{
 \frametitle{Flow Functions in Bit-vector Frameworks}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item Possible flow functions:
-	\begin{itemize}
+	\begin{itemize} \setlength \itemsep{1em}
 	 \item Raise : Result is always top
 	 \item Lower : Result is always bottom
 	 \item Propagate : Propagates the value from one program point to another
@@ -880,9 +880,9 @@ When program undergoes changes:
 
 \frame{ 
 \frametitle{Possible Changes in Data Flow Values}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item As a consequence of some change in a node, some data flow values may:
-      \begin{itemize}
+      \begin{itemize} \setlength \itemsep{1em}
        \item change from top to bottom
        \item change from bottom to top
        \item remain same
@@ -892,7 +892,7 @@ When program undergoes changes:
 
 \frame{ 
 \frametitle{Top to Bottom Change}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item Possible changes in flow functions.
 \end{itemize}
 \begin{pspicture}(0,10)(0,40)
@@ -923,7 +923,7 @@ When program undergoes changes:
 
 \frame{ 
 \frametitle{Bottom to Top Change}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item Possible changes in flow functions.
 \end{itemize}
 
@@ -955,7 +955,7 @@ When program undergoes changes:
 
 \frame{ 
 \frametitle{Handling Top to Bottom Change}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item Bottom value is a final value even during analysis
  \item Whenever there is top to bottom change, the changes can be propagated directly to its neighbouring nodes
 \end{itemize}
@@ -1033,7 +1033,7 @@ When program undergoes changes:
 
 \frame{ 
 \frametitle{Handling Bottom to Top Change}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
 \item Top value is an intermediate value until data flow analysis is completed
   \item Whenever there is bottom to top change, we cannot directly propagate the changes to its neighbouring nodes
  \item Need some more processing
@@ -1117,17 +1117,17 @@ When program undergoes changes:
 
 \frame{ 
 \frametitle{Bottom to Top Change}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item Need some more processing
 \end{itemize}
 }
 
 \frame{ 
 \frametitle{Bottom to Top Change}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \onslide<1->
  \item Steps to incorporate bottom to top change:
- \begin{itemize}
+ \begin{itemize} \setlength \itemsep{1em}
  \onslide<2->
   \item Identify data flow values which may become top
   \onslide<3->
@@ -1233,9 +1233,9 @@ When program undergoes changes:
 
 \frame{
 \frametitle{Motivating Example - Step 1}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item To identify data flow values which were 0 and \textit{may} become 1 due to this change
- \begin{itemize}
+ \begin{itemize} \setlength \itemsep{1em}
  \item <2->Affected region
  \end{itemize}
 \end{itemize}
@@ -1378,12 +1378,12 @@ When program undergoes changes:
 
 \frame{
 \frametitle{Motivating Example - Step 2}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item To identify data flow values which must remain bottom due to the effect of some other properties
- \begin{itemize}
+ \begin{itemize} \setlength \itemsep{1em}
  \item<2-> Initialize affected region to top.
- \item<3-> Identify boundary nodes
- \item<4-> Compute values at boundary nodes and propagate them
+ \item<3-> Identify boundary nodes.
+ \item<4-> Compute values at boundary nodes and propagate them.
  \end{itemize}
 \end{itemize}
 }
@@ -1546,7 +1546,7 @@ When program undergoes changes:
 
 \frame{
 \frametitle{Incremental Analysis for General Frameworks}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item Consider constant propagation analysis 
  \item Component Lattice for Constant Propagation:
  \end{itemize}
@@ -1601,13 +1601,13 @@ When program undergoes changes:
 
 \frame{ 
 \frametitle{Flow Functions}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item Possible flow functions
-      \begin{itemize}
-       \item Top : Similar to raise function
-       \item Bottom : Similar to lower function
-       \item Constant : Always produce a constant value
-       \item Side level : Result depends on the operands of the expression
+      \begin{itemize} \setlength \itemsep{1em}
+       \item Top: Similar to raise function
+       \item Bottom: Similar to lower function
+       \item Constant: Always produce a constant value
+       \item Side level: Result depends on the operands of the expression
       \end{itemize}
 \end{itemize}
 }
@@ -1684,9 +1684,9 @@ When program undergoes changes:
 
 \frame{
 \frametitle{Issues in General Frameworks}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
 \item Unlike bit-vector frameworks, when there is a change to bottom:
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item we cannot propagate the change to its neighbouring nodes  
 % 
   \end{itemize}
@@ -1769,7 +1769,7 @@ When program undergoes changes:
 
 \frame{
 \frametitle{Issues in General Frameworks}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
 \item Unlike bit-vector frameworks, we may need to create an affected region even if there is a change to bottom.
 \item Solution is to create affected region for all kind of changes.
  \end{itemize}
@@ -1780,7 +1780,7 @@ When program undergoes changes:
 
 \frame{
 \frametitle{Method to Reduce the Size of Affected Region}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
 \item Based on the observation that some boundary nodes can be characterized by the concept of \textbf{Dominance Frontier}.      
 \item Eliminate some boundary nodes from being included in the affected region.
  \end{itemize}
@@ -1788,7 +1788,7 @@ When program undergoes changes:
 
 \frame{
 \frametitle{Method to Reduce the Size of Affected Region}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item Let $n$ and $m$ be nodes in CFG. The node $n$ is said to \textit{dominate} $m$ $(n \geq m)$, if every path from \textbf{Start} to $m$ 
  passes through $n$.
  \item If $n \neq m$, then $n$ strictly dominates $m$, denoted as $n > m$
@@ -1851,7 +1851,7 @@ When program undergoes changes:
 
 \frame{
 \frametitle{Method to Reduce the Size of Affected Region}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item All Dominance frontier nodes are boundary nodes (but not vice versa). 
  \end{itemize}
  
@@ -1961,7 +1961,7 @@ When program undergoes changes:
 
 \frame{
 \frametitle{Method to Reduce the Size of Affected Region}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item Possible removal candidates must be dominance frontier of changed node.
 \end{itemize}
 }
@@ -1975,7 +1975,7 @@ When program undergoes changes:
      \psframebox[linewidth=.3,framesep=1.7]{$b=2$}}
 \rput(30,80){\rnode{a}{n1}}
 \rput(39,86){\rnode{a1}{\blue$\langle b=\top \rangle$}}
-\rput(39,74){\rnode{a2}{\blue$\langle b=3 \rangle$}}
+\rput(39,74){\rnode{a2}{\blue$\langle b=2 \rangle$}}
 
 \putnode{n2}{n1}{40}{0}{%
      \psframebox[linewidth=.3,framesep=1.7]{$b=1$}}
@@ -2057,7 +2057,7 @@ When program undergoes changes:
 
 \frame{
 \frametitle{Method to Reduce the Size of Affected Region}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item Also applicable for bit-vector frameworks.
 \end{itemize}
 
@@ -2071,7 +2071,7 @@ When program undergoes changes:
 
 \frame{
 \frametitle{PRISM}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
 \item<1-> \alt<1> { PRISM is a program analyzer generator developed by TATA Research Development and Design Center (TRDDC)}
 
 \end{itemize}
@@ -2171,11 +2171,30 @@ When program undergoes changes:
 \end{pspicture}
 }
 
-\part{Incremental Solver}
+\part{Incremental Solver for PRISM}
 \frame{\partpage}
 
+\frame{
+\frametitle{Architecture of Incremental Solver for PRISM}
+\begin{itemize} \setlength \itemsep{1em}
+ \item Architecture of incremental solver for PRISM is divided into following parts:
+ \begin{itemize} \setlength \itemsep{1em}
+  \item Preprocessing: reads two IRs and find the difference between them.
+  \item Data Flow Computation: 
+	\begin{itemize} \setlength \itemsep{1em}
+	 \item Re-initialization: constructs affected region.
+	 \item Re-computation: identify boundary nodes and compute the information.
+	\end{itemize}
+  \item Update: merge the information.
+  
+ \end{itemize}
+
+\end{itemize}
+
+}
+
 \frame{ 
-\frametitle{Architecture of Incremental PRISM}
+\frametitle{Architecture of Incremental Solver for PRISM}
 \begin{pspicture}(-20,-20)(115,90)
 
 % \begin{psframe}(-20,-20)(115,90)
@@ -2235,27 +2254,31 @@ When program undergoes changes:
 
 \frame{ 
 \frametitle{Assumptions}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item Pointer information will remain same.
  \item No change in the context information.
- \item Declaration of variable haven't change.
+ \item Declaration of variable hasn't change.
+ \item The result of old solver is stored in non-standard format. So the following assumptions are made:
+ \begin{itemize} \setlength \itemsep{1em}
  \item No structural change in the graph.
  \item A name can refer to a single variable in a program at any given program point.
  \item Past information is stored flow sensitively.
-\end{itemize}
+ \end{itemize}
+ \end{itemize}
 
 }
 
 \frame{
 \frametitle{Limitations}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item Following are current limitations:
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item Code for affected region has to be written manually.
  \item Result is stored in a non-standard format by the Solver. 
  \item Non inclusion of global and local declarations.
- \item can be overcome.
+
 \end{itemize}
+ \item These can be overcome.
 \end{itemize}
 
 }
@@ -2267,7 +2290,7 @@ When program undergoes changes:
 
 \frame{
 \frametitle{Testing}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item In the absence of serialization of IR, it was not possible to test the code in real world applications.
  \item Artificially added the changes to check the performance of the incremental solver.
 \end{itemize}
@@ -2682,7 +2705,7 @@ When program undergoes changes:
 
  
 \putnode{n10}{n8}{0}{-5}{%
- \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{func1( )}}}
+ \psframebox[linewidth=.3,framesep=0.3, framearc=.3]{\tiny{func1(z)}}}
 
 
 \putnode{n12}{n10}{5}{-7}{%
@@ -2836,7 +2859,7 @@ When program undergoes changes:
 
 \frame{
 \frametitle{Future Work}
-\begin{itemize}
+\begin{itemize} \setlength \itemsep{1em}
  \item Change the Kulang compiler to generate the code to compute affected region from the flow function.
  \item Extending the method of reducing the size of affected region for multiple changes.
  \item Persist the result of the solver.
@@ -2848,7 +2871,7 @@ When program undergoes changes:
 
 
 
-\part{Thank You !}
+\part{Thank You!}
 \frame{\partpage}
 
 \end{document}
