@@ -550,18 +550,18 @@ Indian Institute of Technology, Bombay}
 \frametitle{Outline of the talk}
 \begin{itemize}
   \item Incremental Data Flow Analysis
-  \item Incremental Analysis for Bit-vector Frameworks
-  \item Incremental Analysis for General Frameworks
-  \item Method to Reduce the Size of Affected Region
+  \begin{itemize}
+   \item Bit-vector Frameworks
+  \item  General Frameworks
+  \end{itemize}
+   \item Method to Reduce the Size of Affected Region
   \item Overview of PRISM 
-  \item Incremental Driver
+  \item Incremental Driver for PRISM
   \begin{itemize}
     \item Architecture
     \item Testing
    \end{itemize}
-  \item Limitations
-  \item Assumptions
-  \item Future Work
+  \item Conclusion
 \end{itemize}
 }
 
@@ -749,17 +749,18 @@ When program undergoes changes:
 \frame{ 
 \frametitle{Motivating Example - Available Expression Analysis}
 \begin{itemize}
- \item Recomputing the values from the scratch is very inefficient 
+%  \item Recomputing the values from the scratch is very inefficient 
+\item may unnecessarily analyze unaffected program behaviours which leads to redundant computation of old values which is very inefficient.
  \item Need an incremental analysis:
       \begin{itemize}
        \item modifies only affected data flow information
-       \item more cost effective then \textbf{exhaustive} analysis
+       \item more cost effective than \textbf{exhaustive} analysis
       \end{itemize}
 \end{itemize}
 }
 
 
-\part{Incremental Analysis for Bit-vector Framework}
+\part{Incremental Analysis for Bit-vector Frameworks}
 \frame{\partpage}
 
 \frame{ 
@@ -793,7 +794,7 @@ When program undergoes changes:
 \begin{pspicture}(0,0)(0,50)
 %%\psframe(0,0)(50,50)
 \onslide<1->
- \putnode{n1}{origin}{35}{40}{%
+ \putnode{n1}{origin}{20}{40}{%
       \psframebox[linewidth=.3,framesep=2.5, framearc=.4]{\hspace{10mm}}}
 %  \onslide<1->
 \putnode{a0}{n1}{30}{20}{\textbf{Available Expression Analysis}}
@@ -808,6 +809,16 @@ When program undergoes changes:
  \ncline{->}{n1}{n2}
 \ncline{->}{n2}{n3}
 
+
+\putnode{x1}{n1}{90}{-5}{1}
+\putnode{x3}{x1}{0}{-2}{}
+\putnode{x2}{x1}{0}{-20}{0}
+\putnode{x4}{x2}{0}{2}{}
+\putnode{b1}{x1}{0}{4}{$(\top)$}
+\putnode{b2}{x2}{0}{-4}{$(\bot)$}
+\ncline{-}{x3}{x4}
+\putnode{l}{x1}{0}{9}{\textbf{Lattice}}
+
 \onslide<1-3>
 \putnode{a}{n2}{-10}{0}{n2}
 
@@ -818,7 +829,7 @@ When program undergoes changes:
  \putnode{z1}{n3}{0}{0}{$b=1$}
 
 \onslide<2-3>
-\putnode{a1}{n1}{40}{0}{\textbf{Raise Function}}
+\putnode{a1}{n1}{35}{0}{\textbf{Raise Function}}
 \putnode{z}{n1}{0}{0}{\red$a*b$}
 \putnode{a2}{a1}{10}{-15}{\begin{tabular}{l}
                          Gen$_1 = 1$\\
@@ -868,7 +879,7 @@ When program undergoes changes:
 }
 
 \frame{ 
-\frametitle{Changes in Bit-vector Frameworks}
+\frametitle{Possible Changes in Data Flow Values}
 \begin{itemize}
  \item As a consequence of some change in a node, some data flow values may:
       \begin{itemize}
@@ -880,7 +891,10 @@ When program undergoes changes:
 }
 
 \frame{ 
-\frametitle{Possible Changes in Flow Functions for Top to Bottom Change}
+\frametitle{Top to Bottom Change}
+\begin{itemize}
+ \item Possible changes in flow functions.
+\end{itemize}
 \begin{pspicture}(0,10)(0,40)
 %%\psframe(0,0)(50,50)
 \putnode{n1}{origin}{45}{30}{%
@@ -908,7 +922,11 @@ When program undergoes changes:
 }
 
 \frame{ 
-\frametitle{Possible Changes in Flow Functions for Top to Bottom Change}
+\frametitle{Bottom to Top Change}
+\begin{itemize}
+ \item Possible changes in flow functions.
+\end{itemize}
+
 \begin{pspicture}(0,10)(0,40)
 \putnode{n1}{origin}{45}{30}{%
      \psframebox[linewidth=.3,framesep=2.5]{lower}}
@@ -933,10 +951,12 @@ When program undergoes changes:
 \end{pspicture}
 }
 
+
+
 \frame{ 
 \frametitle{Handling Top to Bottom Change}
 \begin{itemize}
- \item Top value is an intermediate value until data flow analysis is completed
+ \item Bottom value is a final value even during analysis
  \item Whenever there is top to bottom change, the changes can be propagated directly to its neighbouring nodes
 \end{itemize}
 }
@@ -960,11 +980,13 @@ When program undergoes changes:
 \ncline{->}{n2}{n3}
 \ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=-17,
 		linearc=0.5,offsetB=1]{->}{n3}{n2}
+		
+
 \onslide<1-4>
 \putnode{a}{n3}{0}{0}{$b*c$}
 
 \onslide<1-4>
-\putnode{x}{n1}{5}{17}{\blue Initial Available Expression Analysis}
+\putnode{x}{n1}{5}{17}{\blue Available Expression Analysis (Initial data flow values)}
 		
 \onslide<2-5>
 \putnode{d}{n1}{-8}{4}{\blue0}
@@ -1012,8 +1034,8 @@ When program undergoes changes:
 \frame{ 
 \frametitle{Handling Bottom to Top Change}
 \begin{itemize}
- \item Bottom value is a final value even during analysis
- \item Whenever there is bottom to top change, we cannot directly propagate the changes to its neighbouring nodes
+\item Top value is an intermediate value until data flow analysis is completed
+  \item Whenever there is bottom to top change, we cannot directly propagate the changes to its neighbouring nodes
  \item Need some more processing
 \end{itemize}
 }
@@ -1039,7 +1061,7 @@ When program undergoes changes:
 \onslide<1-4>
 \putnode{a}{n3}{0}{0}{$b=$}
 \onslide<1-4>
-\putnode{x}{n1}{5}{17}{\blue Initial Available Expression Analysis}		
+\putnode{x}{n1}{5}{17}{\blue Available Expression Analysis (Initial data flow values)}		
 		
 \onslide<2-4>
 \putnode{d}{n1}{-8}{4}{\blue0}
@@ -1107,7 +1129,7 @@ When program undergoes changes:
  \item Steps to incorporate bottom to top change:
  \begin{itemize}
  \onslide<2->
-  \item Identify the data flow values which may become top
+  \item Identify data flow values which may become top
   \onslide<3->
   \item Find out the data flow values which must remain bottom due to the effect of some other property
  \end{itemize}
@@ -1212,7 +1234,7 @@ When program undergoes changes:
 \frame{
 \frametitle{Motivating Example - Step 1}
 \begin{itemize}
- \item The data flow values which were 0 and \textit{may} become 1 due to this change
+ \item To identify data flow values which were 0 and \textit{may} become 1 due to this change
  \begin{itemize}
  \item <2->Affected region
  \end{itemize}
@@ -1357,7 +1379,7 @@ When program undergoes changes:
 \frame{
 \frametitle{Motivating Example - Step 2}
 \begin{itemize}
- \item Find out the data flow values which must remain bottom due to the effect of some other property
+ \item To identify data flow values which must remain bottom due to the effect of some other properties
  \begin{itemize}
  \item<2-> Initialize affected region to top.
  \item<3-> Identify boundary nodes
@@ -1518,22 +1540,17 @@ When program undergoes changes:
     \end{pspicture}
 }
 
-\part{Incremental Analysis in General Frameworks}
+\part{Incremental Analysis for General Frameworks}
 \frame{\partpage}
 
 
 \frame{
-\frametitle{Incremental Analysis in General Frameworks}
+\frametitle{Incremental Analysis for General Frameworks}
 \begin{itemize}
  \item Consider constant propagation analysis 
+ \item Component Lattice for Constant Propagation:
  \end{itemize}
-}
-
-
-
-\frame{
- \frametitle{Component Lattice for Constant Propagation}
- \begin{pspicture}(10,0)(200,50)
+\begin{pspicture}(10,0)(200,50)
 % \psframe(10,-10)(200,50)
 \rput(70,40){\rnode{t1}{$\top$}}
 \rput(70,35){\rnode{t2}{undef or ud}}
@@ -1572,8 +1589,15 @@ When program undergoes changes:
 \ncline{-}{b1}{c9}
 %%\ncline{-}{b1}{c10}
 \ncline{-}{b1}{c11}
-\end{pspicture}
+\end{pspicture}  
 }
+
+
+
+% \frame{
+%  \frametitle{Component Lattice for Constant Propagation}
+% 
+% }
 
 \frame{ 
 \frametitle{Flow Functions}
@@ -1615,7 +1639,7 @@ When program undergoes changes:
 
 \onslide<2->
 \putnode{a}{n22}{0}{0}{\red$c=2$}
-\putnode{x}{n1}{35}{-80}{\red Produces Constant values}
+\putnode{x}{n1}{35}{-80}{\red Produce constant value}
 
 
 \end{pspicture}
@@ -1704,14 +1728,24 @@ When program undergoes changes:
 \ncline{->}{n3}{n4}
 \ncline{->}{n5}{n6}
 
-\onslide<1-3>
+\onslide<1-1>
 \ncline{->}{n4}{n5}
 \ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=-20,
 		linearc=0.5,offsetA=2, offsetB=2]{->}{n5}{n3}
-\onslide<1-3>
+
+\onslide<1-1>
 \putnode{c1}{n3}{-13}{3}{\blue$\langle b=\bot \rangle$}
 \putnode{c2}{n3}{-13}{-4}{\blue$\langle b=\bot \rangle$}
 \putnode{d1}{n4}{-13}{3}{\blue$\langle b=\bot \rangle$}
+
+\onslide<2->
+\ncline[linecolor=red]{->}{n4}{n5}
+\ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=-20,
+		linearc=0.5,offsetA=2, offsetB=2, linecolor=red]{->}{n5}{n3}
+\putnode{c1}{n3}{-13}{3}{\red$\langle b=\bot \rangle$}
+\putnode{c2}{n3}{-13}{-4}{\red$\langle b=\bot \rangle$}
+\putnode{d1}{n4}{-13}{3}{\red$\langle b=\bot \rangle$}
+
 
 \onslide<1->
 \putnode{d1}{n5}{-13}{3}{\blue$\langle b=2 \rangle$}
@@ -1720,22 +1754,16 @@ When program undergoes changes:
 % \onslide<1-1>
 \putnode{d2}{n4}{-13}{-4}{\blue$\langle b=2 \rangle$}
  
-\onslide<2-4>
+\onslide<3-4>
 \putnode{x}{n4}{0}{0}{\red\sout{$b=2$}}
 
-\onslide<2-2>
+\onslide<3-3>
 \putnode{u}{n5}{0}{-15}{\red Change to bottom}
 
-\onslide<3-3>
+\onslide<4-4>
 \putnode{u}{n5}{0}{-15}{\red We cannot propagate the change}
 
-\onslide<4->
-\ncline[linecolor=red]{->}{n4}{n5}
-\ncloop[armA=3,armB=3,angleA=-90,angleB=90,loopsize=-20,
-		linearc=0.5,offsetA=2, offsetB=2, linecolor=red]{->}{n5}{n3}
-\putnode{c1}{n3}{-13}{3}{\red$\langle b=\bot \rangle$}
-\putnode{c2}{n3}{-13}{-4}{\red$\langle b=\bot \rangle$}
-\putnode{d1}{n4}{-13}{3}{\red$\langle b=\bot \rangle$}
+% \onslide<4->
 \end{pspicture}
 }
 
@@ -1824,16 +1852,12 @@ When program undergoes changes:
 \frame{
 \frametitle{Method to Reduce the Size of Affected Region}
 \begin{itemize}
- \item All Dominance frontier are boundary nodes. 
- \item Vice-versa is not true.
-\end{itemize}
-}
-
-\frame{
-\frametitle{Method to Reduce the Size of Affected Region}
-\begin{pspicture}(0,0)(100,90)
+ \item All Dominance frontier nodes are boundary nodes (but not vice versa). 
+ \end{itemize}
+ 
+ \begin{pspicture}(0,0)(100,90)
 %%\psframe(0,0)(100,90)
-\onslide<1->
+\onslide<2->
 \putnode{n1}{origin}{60}{80}{%
      \psframebox[linewidth=.3,framesep=1.7]{$a=$}}
 \putnode{n2}{n1}{0}{-15}{%
@@ -1854,7 +1878,7 @@ When program undergoes changes:
 \ncline{->}{n4}{n5}
 \ncline{->}{n5}{n6}
 
-\onslide<1-2>
+\onslide<2-3>
 \rput(50,80){\rnode{a}{i}}
 \rput(50,65){\rnode{a}{j}}
 \rput(30,50){\rnode{a}{k}}
@@ -1863,12 +1887,12 @@ When program undergoes changes:
 \rput(70,50){\rnode{a}{l}}
 
 
-\onslide<2->
+\onslide<3->
 \putnode{x}{n1}{0}{0}{\red\sout{$a=$}}
-\onslide<2-3>
+\onslide<3-4>
 \putnode{u}{n1}{0}{7}{\red Affected region: $<i, j, l, m, n>$}
 
-\onslide<3->
+\onslide<4->
 \rput(30,50){\rnode{a}{k}}
 \rput(50,80){\rnode{a}{\red i}}
 \rput(50,65){\rnode{a}{\red j}}
@@ -1876,15 +1900,69 @@ When program undergoes changes:
 \rput(50,20){\rnode{a}{\red n}}
 \rput(70,50){\rnode{a}{\red l}}
 
-\onslide<4->
+\onslide<5->
 \putnode{u}{n1}{0}{7}{\red $m$ is a boundary node and is dominated by $i$}
 \end{pspicture}
+
+ 
 }
+
+% \frame{
+% \frametitle{Method to Reduce the Size of Affected Region}
+% \begin{pspicture}(0,0)(100,90)
+% %%\psframe(0,0)(100,90)
+% \onslide<1->
+% \putnode{n1}{origin}{60}{80}{%
+%      \psframebox[linewidth=.3,framesep=1.7]{$a=$}}
+% \putnode{n2}{n1}{0}{-15}{%
+%      \psframebox[linewidth=.3,framesep=1.7]{$if(e)$}}
+% \putnode{n3}{n2}{-20}{-15}{%
+%      \psframebox[linewidth=.3,framesep=1.7]{$a=2$}}
+% \putnode{n4}{n2}{20}{-15}{%
+%      \psframebox[linewidth=.3,framesep=1.7]{$b=2$}}
+% \putnode{n5}{n2}{0}{-30}{%
+%      \psframebox[linewidth=.3,framesep=2.5]{\hspace{10mm}}}
+% \putnode{n6}{n5}{0}{-15}{%
+%      \psframebox[linewidth=.3,framesep=2.5]{\hspace{10mm}}}
+% 
+% \ncline{->}{n1}{n2}
+% \ncline{->}{n2}{n3}
+% \ncline{->}{n3}{n5}
+% \ncline{->}{n2}{n4}
+% \ncline{->}{n4}{n5}
+% \ncline{->}{n5}{n6}
+% 
+% \onslide<1-2>
+% \rput(50,80){\rnode{a}{i}}
+% \rput(50,65){\rnode{a}{j}}
+% \rput(30,50){\rnode{a}{k}}
+% \rput(50,35){\rnode{a}{m}}
+% \rput(50,20){\rnode{a}{n}}
+% \rput(70,50){\rnode{a}{l}}
+% 
+% 
+% \onslide<2->
+% \putnode{x}{n1}{0}{0}{\red\sout{$a=$}}
+% \onslide<2-3>
+% \putnode{u}{n1}{0}{7}{\red Affected region: $<i, j, l, m, n>$}
+% 
+% \onslide<3->
+% \rput(30,50){\rnode{a}{k}}
+% \rput(50,80){\rnode{a}{\red i}}
+% \rput(50,65){\rnode{a}{\red j}}
+% \rput(50,35){\rnode{a}{\red m}}
+% \rput(50,20){\rnode{a}{\red n}}
+% \rput(70,50){\rnode{a}{\red l}}
+% 
+% \onslide<4->
+% \putnode{u}{n1}{0}{7}{\red $m$ is a boundary node and is dominated by $i$}
+% \end{pspicture}
+% }
 
 \frame{
 \frametitle{Method to Reduce the Size of Affected Region}
 \begin{itemize}
- \item Possible removal candidates is a dominance frontier of changed node.
+ \item Possible removal candidates must be dominance frontier of changed node.
 \end{itemize}
 }
 
@@ -1906,7 +1984,7 @@ When program undergoes changes:
 \rput(80,74){\rnode{b2}{\blue$\langle b=1 \rangle$}}
 
 \putnode{n3}{n1}{20}{-15}{%
-     \psframebox[linewidth=.3,framesep=1.7]{\hspace{10mm}}}
+      \psframebox[linewidth=.3,framesep=1.7]{\hspace{10mm}}}
 
 \putnode{n4}{n1}{20}{-30}{%
      \psframebox[linewidth=.3,framesep=1.7]{\hspace{10mm}}}
@@ -1940,11 +2018,15 @@ When program undergoes changes:
 \ncline{->}{n1}{n3}
 \ncline{->}{n2}{n3}
 
+
 \onslide<1-3>
 \rput(47,69){\rnode{c1}{\blue$\langle b=\bot \rangle$}}
 
 \onslide<2->
 \putnode{x}{n5}{0}{0}{\red\sout{$b=3$}}          
+
+\onslide<2-2>
+\putnode{u}{n3}{40}{0}{\red {AR: $<n_5, n_6, n_3, n_4>$}}
 
 \onslide<3->
 \rput(49,65){\rnode{c}{\red n3}}
@@ -1972,6 +2054,17 @@ When program undergoes changes:
 \end{pspicture}
 
 }
+
+\frame{
+\frametitle{Method to Reduce the Size of Affected Region}
+\begin{itemize}
+ \item Also applicable for bit-vector frameworks.
+\end{itemize}
+
+}
+
+
+
 
 \part{Overview of PRISM}
 \frame{\partpage}
@@ -2161,6 +2254,7 @@ When program undergoes changes:
  \item Code for affected region has to be written manually.
  \item Result is stored in a non-standard format by the Solver. 
  \item Non inclusion of global and local declarations.
+ \item can be overcome.
 \end{itemize}
 \end{itemize}
 
@@ -2170,6 +2264,15 @@ When program undergoes changes:
 
 \part{Testing}
 \frame{\partpage}
+
+\frame{
+\frametitle{Testing}
+\begin{itemize}
+ \item In the absence of serialization of IR, it was not possible to test the code in real world applications.
+ \item Artificially added the changes to check the performance of the incremental solver.
+\end{itemize}
+
+}
 
 \frame{ 
 \frametitle{Test Case 1 : $a$ is a global variable}
@@ -2734,9 +2837,10 @@ When program undergoes changes:
 \frame{
 \frametitle{Future Work}
 \begin{itemize}
- \item Change the Kulang compiler to generate the affected region from the flow function.
+ \item Change the Kulang compiler to generate the code to compute affected region from the flow function.
  \item Extending the method of reducing the size of affected region for multiple changes.
  \item Persist the result of the solver.
+
 \end{itemize}
 
 
